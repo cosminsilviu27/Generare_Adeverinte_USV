@@ -1,0 +1,120 @@
+{% extends "socialaccount/base_entrance.html" %}
+{% load i18n %}
+{% load allauth %}
+{% comment %} {% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %} {% endcomment %}
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f8fa;
+        color: #333;
+    }
+
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+    }
+
+    .menu {
+        margin-bottom: 20px;
+    }
+
+    .menu ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .menu ul li {
+        display: inline;
+        margin-right: 15px;
+    }
+
+    .menu ul li a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .menu ul li a:hover {
+        text-decoration: underline;
+    }
+
+    .login-box {
+        background-color: #fff;
+        padding: 50px 50px 70px 50px; /* Increased padding to make the box higher */
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 600px; /* Keeping the increased width */
+    }
+
+    .login-title {
+        font-size: 28px; /* Increased the font size */
+        margin-bottom: 20px; /* Increased the margin */
+    }
+
+    .login-description {
+        margin-bottom: 30px; /* Increased the margin */
+        font-size: 18px; /* Increased the font size */
+        color: #666;
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center align the button */
+    }
+
+    .login-button {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 4px;
+        font-size: 18px; /* Increased the font size */
+        cursor: pointer;
+        margin-top: 10px;
+        width: 50%; /* Reduced the width of the button */
+    }
+
+    .login-button:hover {
+        background-color: #c82333;
+    }
+</style>
+
+<div class="login-container">
+    {% comment %} <div class="menu">
+        <ul>
+            <li><a href="{% url 'account_login' %}">{% trans "Sign In" %}</a></li>
+            <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
+        </ul>
+    </div> {% endcomment %}
+    <div class="login-box">
+        <h1 class="login-title">
+            {% if process == "connect" %}
+                {% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}
+            {% else %}
+                {% blocktrans with provider.name as provider %}Conectați-vă la contul de secretară {{ provider }}{% endblocktrans %}
+            {% endif %}
+        </h1>
+        <p class="login-description">
+            {% if process == "connect" %}
+                {% blocktrans with provider.name as provider %}You are about to connect a new third-party account from {{ provider }}.{% endblocktrans %}
+            {% else %}
+                {% blocktrans with provider.name as provider %}Sunteți pe cale să vă conectați folosind un cont de la o terță parte de la {{ provider }}.{% endblocktrans %}
+            {% endif %}
+        </p>
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            <button type="submit" class="login-button">
+                {% trans "Înregistrare" %}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

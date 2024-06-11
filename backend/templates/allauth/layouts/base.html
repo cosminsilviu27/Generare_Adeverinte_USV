@@ -1,0 +1,65 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block head_title %}
+            {% endblock head_title %}
+        </title>
+        {% block extra_head %}
+        {% endblock extra_head %}
+        <style>
+            .messages-container {
+                background-color: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+                padding: 10px;
+                margin: 20px 0;
+                border-radius: 5px;
+            }
+            .messages-container ul {
+                list-style-type: none;
+                padding-left: 0;
+            }
+            .messages-container li {
+                margin-bottom: 5px;
+            }
+            .messages-container strong {
+                display: block;
+                margin-bottom: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        {% block body %}
+            <div>
+                {% comment %} <strong>{% trans "Menu:" %}</strong> {% endcomment %}
+                <ul>
+                    {% if user.is_authenticated %}
+                        {% url 'account_email' as email_url %}
+            
+                        {% url 'mfa_index' as mfa_url %}
+                        {% if mfa_url %}
+                            <li>
+                                <a href="{{ mfa_url }}">{% trans "Two-Factor Authentication" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'usersessions_list' as usersessions_list_url %}
+                        {% if usersessions_list_url %}
+                            <li>
+                                <a href="{{ usersessions_list_url }}">{% trans "Sessions" %}</a>
+                            </li>
+                        {% endif %}
+                        {% url 'account_logout' as logout_url %}
+                    {% endif %}
+                </ul>
+            </div>
+            {% block content %}
+            {% endblock content %}
+        {% endblock body %}
+        {% block extra_body %}
+        {% endblock extra_body %}
+    </body>
+</html>

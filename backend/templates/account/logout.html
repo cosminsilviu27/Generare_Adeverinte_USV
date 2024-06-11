@@ -1,0 +1,105 @@
+{% extends "account/base_manage.html" %}
+{% load allauth i18n %}
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f8fa;
+        color: #333;
+    }
+
+    .logout-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+    }
+
+    .logout-box {
+        background-color: #fff;
+        padding: 50px 50px 70px 50px; /* Increased padding to make the box larger */
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 600px; /* Increased the max-width to make the box larger */
+    }
+
+    .logout-title {
+        font-size: 28px; /* Increased the font size */
+        margin-bottom: 20px; /* Increased the margin */
+    }
+
+    .logout-description {
+        margin-bottom: 30px; /* Increased the margin */
+        font-size: 18px; /* Increased the font size */
+        color: #666;
+    }
+
+    .logout-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center align the button */
+    }
+
+    .logout-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 15px; /* Increased the padding */
+        border-radius: 4px;
+        font-size: 18px; /* Increased the font size */
+        cursor: pointer;
+        margin-top: 10px;
+        width: 60%; /* Increased the width of the button */
+    }
+
+    .logout-button:hover {
+        background-color: #0056b3;
+    }
+
+    .secondary-button {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .secondary-button:hover {
+        background-color: #c82333;
+    }
+
+    .signup-link {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .signup-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="logout-container">
+    <div class="logout-box">
+        <h1 class="logout-title">
+            {% trans "Deconectare" %}
+        </h1>
+        <p class="logout-description">
+            {% trans 'Sunteți sigur că doriți să vă deconectați?' %}
+        </p>
+        {% url 'account_logout' as action_url %}
+        <form method="post" action="{{ action_url }}" class="logout-form">
+            {% csrf_token %}
+            {{ redirect_field }}
+            <button type="submit" class="logout-button">
+                {% trans 'Deconectare' %}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

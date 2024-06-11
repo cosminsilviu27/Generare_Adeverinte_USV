@@ -1,0 +1,23 @@
+# Python virtual environment
+venv/
+myenv/
+*.pyc
+
+.env
+
+# Django generated files
+__pycache__/
+*.sqlite3
+
+# IDE-specific files
+.vscode/
+.idea/
+*.swp
+
+# Logs and temporary files
+*.log
+*.tmp
+*.tmp.*
+
+build
+

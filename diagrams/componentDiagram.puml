@@ -1,0 +1,46 @@
+@startuml
+
+left to right direction
+
+[React App] as App
+
+[Navbar] as NavbarComponent
+[Homepage] as HomepageComponent
+[Admin Components] as AdminComponents
+[Certificate Components] as CertificateComponents
+[Faculty Components] as FacultyComponents
+[Secretary Components] as SecretaryComponents
+[Student Components] as StudentComponents
+[CSRFTokenComponent] as CSRFTokenComponent
+
+[Student API Endpoints] as StudentAPI
+[Secretary API Endpoints] as SecretaryAPI
+[Faculty API Endpoints] as FacultyAPI
+[Certificate API Endpoints] as CertificateAPI
+[Administrator API Endpoints] as AdminAPI
+[Autorization API Endpoints] as AuthAPI
+
+[Database Tables] as Database
+
+App -up-> NavbarComponent
+App -down-> HomepageComponent
+App -left-> AdminComponents
+App -right-> StudentComponents
+App -right-> SecretaryComponents
+App -left-> FacultyComponents
+App -right-> CSRFTokenComponent
+App -left-> CertificateComponents
+
+StudentComponents -down-> StudentAPI
+SecretaryComponents -down-> SecretaryAPI
+FacultyComponents -down-> FacultyAPI
+AdminComponents -down-> AdminAPI
+CSRFTokenComponent -down-> AuthAPI
+CertificateComponents -down-> CertificateAPI
+
+Database -up-> StudentAPI
+Database -up-> SecretaryAPI
+Database -up-> FacultyAPI
+Database -up-> AdminAPI
+
+@enduml

@@ -1,0 +1,10 @@
+backend/.env
+backend/.env
+diagrams/.idea/misc.xml
+diagrams/.idea/modules.xml
+diagrams/.idea/vcs.xml
+diagrams/.idea/diagrams.iml
+diagrams/.idea/inspectionProfiles/profiles_settings.xml
+diagrams/.idea/inspectionProfiles/Project_Default.xml
+
+twaaos-env/

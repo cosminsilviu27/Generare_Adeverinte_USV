@@ -1,0 +1,67 @@
+@startuml
+
+left to right direction
+
+actor Student as S
+
+usecase "Completare formular cerere adeverință" as UC1
+usecase "Recepționare email confirmare cerere" as UC2
+
+S --> UC1 : Completare formular
+S --> UC2 : Recepționare email confirmare
+
+actor Secretary as Sec
+
+usecase "Acces aplicație" as UC3
+usecase "Vizualizare cereri în așteptare" as UC4
+usecase "Aprobare cerere adeverință" as UC5
+usecase "Respingere cerere adeverință" as UC6
+usecase "Editare cerere adeverință" as UC7
+usecase "Vizualizare cereri aprobate" as UC8
+usecase "Vizualizare cereri respinse" as UC9
+usecase "Generare raport adeverințe" as UC10
+usecase "Listare și imprimare cereri aprobate" as UC11
+usecase "Editare date student" as UC12
+usecase "Ștergere student" as UC13
+usecase "Adăugare manual student" as UC14
+usecase "Recepționare email raport" as UC15
+usecase "Părăsire aplicație" as UC16
+
+
+Sec --> UC3 : Autentificare
+Sec --> UC4 : Vizualizare cereri în așteptare
+Sec --> UC5 : Aprobare cerere adeverință
+Sec --> UC6 : Respingere cerere adeverință
+Sec --> UC7 : Editare cerere adeverință
+Sec --> UC8 : Vizualizare cereri aprobate
+Sec --> UC9 : Vizualizare cereri respinse
+Sec --> UC10 : Generare raport adeverințe
+Sec --> UC11 : Listare și imprimare cereri aprobate
+Sec --> UC12 : Editare date student
+Sec --> UC13 : Ștergere student
+Sec --> UC14 : Adăugare manual student
+Sec --> UC15 : Recepționare email raport
+Sec --> UC16 : Delogare
+
+
+actor Administrator as Admin
+
+usecase "Acces aplicație" as UC17
+usecase "Configurare date admin" as UC18
+usecase "Încărcare listă studenți" as UC19
+usecase "Adăugare secretară" as UC20
+usecase "Editare date secretare" as UC21
+usecase "Editare date facultăți" as UC22
+usecase "Resetare aplicație" as UC23
+usecase "Părăsire aplicație" as UC24
+
+Admin --> UC17 : Autentificare
+Admin --> UC18 : Configurare aplicație
+Admin --> UC19 : Încărcare listă studenți
+Admin --> UC20 : Adăugare secretară
+Admin --> UC21 : Editare date secretare
+Admin --> UC22 : Editare date facultăți
+Admin --> UC23 : Resetare aplicație
+Admin --> UC24 : Delogare
+
+@enduml

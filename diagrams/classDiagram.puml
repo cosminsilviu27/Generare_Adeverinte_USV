@@ -1,0 +1,55 @@
+@startuml
+
+left to right direction
+
+class AdminProfile {
+    user: User
+    first_name: str
+    last_name: str
+}
+
+class SecretaryProfile {
+    first_name: str
+    last_name: str
+    title: str
+    email: str
+}
+
+class Faculty {
+    full_name: str
+    short_name: str
+    current_academic_year: str
+    dean_name: str
+    chief_secretary_name: str
+}
+
+class StudentProfile {
+    email: str
+    study_program_name: str
+    study_cycle: str
+    study_year: int
+    study_domain: str
+    study_form: str
+    funding: str
+    full_name: str
+    sex: str
+}
+
+class Certificate {
+    registration_number: str
+    registration_date: Date
+    student: StudentProfile
+    purpose: str
+    status: str
+    rejection_motive: str
+    processing_date: Date
+    processed_by: SecretaryProfile
+    processing_position: int
+}
+
+StudentProfile --o Faculty
+Certificate --o StudentProfile
+Faculty --o SecretaryProfile
+Certificate --o SecretaryProfile
+
+@enduml

@@ -1,0 +1,121 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load allauth account %}
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f8fa;
+        color: #333;
+    }
+
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+    }
+
+    .login-box {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .login-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .login-description {
+        margin-bottom: 20px;
+        font-size: 16px;
+        color: #666;
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .login-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .login-button:hover {
+        background-color: #0056b3;
+    }
+
+    .secondary-button {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .secondary-button:hover {
+        background-color: #c82333;
+    }
+
+    .signup-link {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .signup-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-box">
+        <h1 class="login-title">
+            {% trans "Sign In" %}
+        </h1>
+        {% if not SOCIALACCOUNT_ONLY %}
+            <p class="login-description">
+                {% blocktranslate %}If you have not created an account yet, then please <a href="{{ signup_url }}" class="signup-link">sign up</a> first.{% endblocktranslate %}
+            </p>
+            {% url 'account_login' as login_url %}
+            <form method="post" action="{{ login_url }}" class="login-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {{ redirect_field }}
+                <button type="submit" class="login-button">
+                    {% trans "Sign In" %}
+                </button>
+            </form>
+        {% endif %}
+        {% if LOGIN_BY_CODE_ENABLED %}
+            <hr>
+            <h2>
+                <a href="{{ request_login_code_url }}" class="secondary-button">
+                    {% trans "Mail me a sign-in code" %}
+                </a>
+            </h2>
+        {% endif %}
+        {% if SOCIALACCOUNT_ENABLED %}
+            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

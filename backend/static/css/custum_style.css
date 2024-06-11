@@ -1,0 +1,17 @@
+/* custom_style.css */
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1, h2 {
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+p {
+    font-size: 1rem;
+}
+
+.btn {
+    background-color: #d9534f; /* Modify button background color */
+}

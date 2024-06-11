@@ -1,0 +1,66 @@
+@startuml
+
+left to right direction
+
+package "Entities" {
+    package "Models" {
+        [AdminProfile]
+        [SecretaryProfile]
+        [Faculty]
+        [StudentProfile]
+        [Certificate]
+    }
+
+    package "Forms" {
+        [Google Forms]
+    }
+}
+
+package "Roles" {
+    package "Student" {
+        [Completează formularul Google Forms]
+    }
+
+    package "Secretariat" {
+        [Acces aplicație]
+        [Gestionarea cererilor]
+        [Generarea adeverințelor]
+        [Listarea adeverințelor]
+        [Generarea rapoartelor]
+        [Gestionarea studenților]
+    }
+
+    package "Administrator" {
+        [Acces aplicație]
+        [Gestionarea aplicației]
+        [Gestionarea studenților]
+        [Gestionarea secretarelor]
+        [Gestionarea facultăților]
+        [Resetarea aplicației]
+    }
+}
+
+package "API Endpoints" {
+    [Student API Endpoints]
+    [Secretary API Endpoints]
+    [Faculty API Endpoints]
+    [Administrator API Endpoints]
+    [Certificate API Endpoints]
+    [Auth API Endpoints]
+}
+
+package "UI Components" {
+    [Navbar]
+    [Homepage]
+    [Admin Components]
+    [Certificate Components]
+    [Faculty Components]
+    [Secretary Components]
+    [Student Components]
+}
+
+package "Database" {
+    [Database Tables]
+}
+
+@enduml

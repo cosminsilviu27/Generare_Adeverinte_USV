@@ -1,0 +1,21 @@
+@startuml
+
+left to right direction
+
+state User{
+    [*] --> Neautentificat
+    Neautentificat --> Autentificat : Autentificare reușită
+    Autentificat --> Neautentificat : Deconectare
+}
+
+state Cerere {
+    [*] --> InAsteptare : Depunere cerere
+    InAsteptare --> Aprobat : Aprobare cerere
+    InAsteptare --> Respins : Respindere cerere
+    InAsteptare --> InAsteptare : Editare cerere
+}
+
+
+User --> Cerere : Acces cerere
+
+@enduml

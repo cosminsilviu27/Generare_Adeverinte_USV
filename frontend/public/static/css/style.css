@@ -1,0 +1,47 @@
+.container {
+    background-color: #FEFEFE;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 50px auto;
+}
+
+h1 {
+    color: #272F54;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    color: #272F54;
+}
+
+.custom-input {
+    border: 1px solid #4F94E2;
+    border-radius: 5px;
+    padding: 10px;
+    color: #272F54;
+}
+
+.custom-input::placeholder {
+    color: #9299A4;
+}
+
+.custom-button {
+    background-color: #87C2EB;
+    color: #FEFEFE;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.custom-button:hover {
+    background-color: #4F94E2;
+}
+
+p {
+    color: #A22531;
+}
