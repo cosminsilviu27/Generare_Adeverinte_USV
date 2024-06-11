@@ -2,8 +2,11 @@ import React, {useState} from 'react';
 import CSRFToken from '../../components/CSRFToken';
 import {updateFacultiesList} from "../../actions/faculties";
 import {connect} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
 const UploadFacultiesForm = ({updateFacultiesList}) => {
+    const navigate = useNavigate();
+
     const [file, setFile] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -25,7 +28,7 @@ const UploadFacultiesForm = ({updateFacultiesList}) => {
             return;
         }
 
-        updateFacultiesList(file);
+        updateFacultiesList(file, navigate);
     };
 
     return (
@@ -34,7 +37,6 @@ const UploadFacultiesForm = ({updateFacultiesList}) => {
             <p className='mt-3 mb-3'>Încărcați un fișier ce conține noua listă de facultăți:</p>
 
             <form onSubmit={e => onSubmit(e)}>
-                <CSRFToken/>
                 <input
                     className='form-control'
                     type='file'

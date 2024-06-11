@@ -3,24 +3,23 @@ import {connect} from 'react-redux';
 import {fetchStudentsList} from '../../actions/students';
 import CSRFToken from '../../components/CSRFToken';
 import {Link} from "react-router-dom";
+import {TailSpin} from "react-loader-spinner";
 
 const StudentsList = ({fetchStudentsList, students, error, isAuthenticated, loginMethod}) => {
     useEffect(() => {
         fetchStudentsList();
     }, [fetchStudentsList]);
 
-    const adminBtns = (
-        <Fragment>
-            <Link to={'/update-students-list'} className='btn btn-primary'>Modifică lista de studenți</Link>
-        </Fragment>)
+    const adminBtns = (<Fragment>
+        <Link to={'/update-students-list'} className='btn btn-primary'>Modifică lista de studenți</Link>
+    </Fragment>)
 
-    const secretaryBtns = (
-        <Fragment>
-            <Link to={'/create-student'} className='btn btn-primary'>Adaugă student</Link>
-        </Fragment>)
+    const secretaryBtns = (<Fragment>
+        <Link to={'/create-student'} className='btn btn-primary'>Adaugă student</Link>
+    </Fragment>)
 
-    return (<div className="container">
-            <CSRFToken/>
+    return (
+        <div className="container">
             <div className='mt-3'>
                 {loginMethod === 'username' ? adminBtns : secretaryBtns}
             </div>
@@ -28,41 +27,50 @@ const StudentsList = ({fetchStudentsList, students, error, isAuthenticated, logi
 
             {error && <p>{error}</p>}
 
-            <div className="mt-3">
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>Program de studiu</th>
-                        <th>Ciclu de studii</th>
-                        <th>Anul de studiu</th>
-                        <th>Domeniu de studiu</th>
-                        <th>Forma de studii</th>
-                        <th>Finanțare</th>
-                        <th>Nume complet</th>
-                        <th>Sex</th>
-                        <th>Acțiuni</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {students.map((student, index) => (<tr key={index}>
-                            <td>{student.email}</td>
-                            <td>{student.study_program_name}</td>
-                            <td>{student.study_cycle}</td>
-                            <td>{student.study_year}</td>
-                            <td>{student.study_domain}</td>
-                            <td>{student.study_form}</td>
-                            <td>{student.funding}</td>
-                            <td>{student.full_name}</td>
-                            <td>{student.sex}</td>
-                            <td>
-                                <Link to={`/edit-student/${student.id}`} className="btn btn-primary">Edit</Link>
-                            </td>
-                        </tr>))}
-                    </tbody>
-                </table>
-            </div>
-        </div>);
+            {students && students.length > 0 ?
+                (<>
+                    <div className="mt-3">
+                        <table className="table">
+                            <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Program de studiu</th>
+                                <th>Ciclu de studii</th>
+                                <th>Anul de studiu</th>
+                                <th>Domeniu de studiu</th>
+                                <th>Forma de studii</th>
+                                <th>Finanțare</th>
+                                <th>Nume complet</th>
+                                <th>Sex</th>
+                                <th>Acțiuni</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {students.map((student, index) => (<tr key={index}>
+                                <td>{student.email}</td>
+                                <td>{student.study_program_name}</td>
+                                <td>{student.study_cycle}</td>
+                                <td>{student.study_year}</td>
+                                <td>{student.study_domain}</td>
+                                <td>{student.study_form}</td>
+                                <td>{student.funding}</td>
+                                <td>{student.full_name}</td>
+                                <td>{student.sex}</td>
+                                <td>
+                                    <Link to={`/edit-student/${student.id}`} className="btn btn-primary">Modifică</Link>
+                                </td>
+                            </tr>))}
+                            </tbody>
+                        </table>
+                    </div>
+                </>) :
+                (<div className="justify-content-center d-flex mt-5">
+                    <TailSpin height="80" width="80" color="#4fa94d" ariaLabel="tail-spin-loading" radius="1"
+                          wrapperStyle={{}} wrapperClass="" visible={true}/>
+                </div>)
+            }
+        </div>
+    );
 };
 
 const mapStateToProps = (state) => ({

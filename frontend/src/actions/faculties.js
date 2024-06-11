@@ -10,8 +10,8 @@ import {
     UPDATE_FACULTIES_REQUEST,
 } from "./types";
 
+export const updateFacultiesList = (file, navigate) => async (dispatch) => {
 
-export const updateFacultiesList = (file) => async (dispatch) => {
     const config = {
         headers: {
             'Content-Type': 'multipart/form-data', 'X-CSRFToken': Cookies.get('csrftoken')
@@ -40,7 +40,8 @@ export const updateFacultiesList = (file) => async (dispatch) => {
             });
 
             console.log('UPDATE FACULTIES LIST SUCCESS');
-            window.location.href = `${process.env.REACT_APP_API_URL}/get-faculties-list`
+
+            navigate(`/get-faculties-list`);
         } else if (res.data.fileError) {
             dispatch({
                 type: UPDATE_FACULTIES_FILE_ERROR, payload: res.data.fileError

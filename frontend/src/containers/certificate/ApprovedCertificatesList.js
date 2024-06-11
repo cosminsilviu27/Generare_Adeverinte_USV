@@ -1,22 +1,22 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
-import {fetchCertificatesList} from '../../actions/certificates';
+import {fetchApprovedCertificatesList} from '../../actions/certificates';
 import {Link} from "react-router-dom";
 import {TailSpin} from "react-loader-spinner";
 
-const CertificatesList = ({fetchCertificatesList, certificates, error}) => {
+const ApprovedCertificatesList = ({fetchApprovedCertificatesList, approvedCertificates, error}) => {
 
     useEffect(() => {
-        fetchCertificatesList();
-    }, [fetchCertificatesList]);
+        fetchApprovedCertificatesList();
+    }, [fetchApprovedCertificatesList]);
 
     return (
         <div className="container">
-            <h1 className="mt-3">Lista de solicitări:</h1>
+            <h1 className="mt-3">Lista de adeverințe aprobate:</h1>
 
             {error && <p>{error}</p>}
 
-            {certificates && certificates.length > 0 ?
+            {approvedCertificates && approvedCertificates.length > 0 ?
                 (<>
                     <div className="mt-3">
                         <table className="table">
@@ -30,17 +30,17 @@ const CertificatesList = ({fetchCertificatesList, certificates, error}) => {
                             </tr>
                             </thead>
                             <tbody>
-                            {certificates.map((certificate, index) => (
+                            {approvedCertificates.map((certificate, index) => (
                                 <tr key={index}>
-                                    <td>{certificate.student_data?.full_name ?? "-"}</td>
-                                    <td>{certificate.student_data?.email ?? "-"}</td>
+                                    <td>{certificate.student?.full_name ?? "-"}</td>
+                                    <td>{certificate.student?.email ?? "-"}</td>
                                     <td>{certificate.purpose}</td>
                                     <td>{certificate.registration_date}</td>
                                     <td>
-                                        <Link to={`/approve-certificate/${certificate.processing_position}`}
-                                              className="btn btn-primary mr-2">Aprobă cerere</Link>
-                                        <Link to={`/reject-certificate/${certificate.processing_position}`}
-                                              className="btn btn-primary ml-2">Refuză cerere</Link>
+                                        <Link to={`/edit-certificate/${certificate.id}`}
+                                              className="btn btn-primary mr-2">Modifică cerere</Link>
+                                        <Link to={`/print-certificate/${certificate.id}`}
+                                              className="btn btn-primary ml-2">Listează cerere</Link>
                                     </td>
                                 </tr>
                             ))}
@@ -57,8 +57,8 @@ const CertificatesList = ({fetchCertificatesList, certificates, error}) => {
     );
 }
 const mapStateToProps = (state) => ({
-    certificates: state.certificate.certificates,
+    approvedCertificates: state.certificate.approvedCertificates,
     error: state.certificate.error
 });
 
-export default connect(mapStateToProps, {fetchCertificatesList})(CertificatesList);
+export default connect(mapStateToProps, {fetchApprovedCertificatesList})(ApprovedCertificatesList);

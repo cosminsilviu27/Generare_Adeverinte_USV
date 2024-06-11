@@ -2,8 +2,11 @@ import React, {useState} from 'react';
 import CSRFToken from '../../components/CSRFToken';
 import {updateStudentsList} from "../../actions/students";
 import {connect} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
 const UploadStudentsForm = ({updateStudentsList}) => {
+    const navigate = useNavigate();
+
     const [file, setFile] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -25,7 +28,7 @@ const UploadStudentsForm = ({updateStudentsList}) => {
             return;
         }
 
-        updateStudentsList(file);
+        updateStudentsList(file, navigate);
     };
 
     return (
@@ -34,7 +37,6 @@ const UploadStudentsForm = ({updateStudentsList}) => {
             <p className='mt-3 mb-3'>Încărcați un fișier ce conține noua listă de studenți:</p>
 
             <form onSubmit={e => onSubmit(e)}>
-                <CSRFToken/>
                 <input
                     className='form-control'
                     type='file'

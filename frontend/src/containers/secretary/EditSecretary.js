@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {useParams} from 'react-router-dom'; // Import useParams hook
+import {useNavigate, useParams} from 'react-router-dom'; // Import useParams hook
 import {connect} from 'react-redux';
 import {fetchSecretary, updateSecretary} from '../../actions/secretaries';
 import CSRFToken from "../../components/CSRFToken";
 
 const EditSecretary = ({fetchSecretary, updateSecretary, secretary, error}) => {
     const {secretary_id} = useParams(); // Access route parameter using useParams
+    const navigate = useNavigate();
 
      useEffect(() => {
         fetchSecretary(secretary_id);
@@ -35,13 +36,12 @@ const EditSecretary = ({fetchSecretary, updateSecretary, secretary, error}) => {
 
     const onSubmit = e => {
         e.preventDefault();
-        updateSecretary(secretary_id, formData);
+        updateSecretary(secretary_id, formData, navigate);
     };
 
     return (
         <div className="container">
-            <CSRFToken/>
-            <h1 className="mt-3">Edit Secretary:</h1>
+            <h1 className="mt-3">Modifică Secretară:</h1>
 
             {error && <p>{error}</p>}
             <div className="mt-3">
@@ -49,22 +49,22 @@ const EditSecretary = ({fetchSecretary, updateSecretary, secretary, error}) => {
                     {secretary && (
                         <>
                             <div className="form-group">
-                                <label>First Name</label>
+                                <label>Prenume</label>
                                 <input
                                     type="text"
                                     className="form-control custom-input"
-                                    placeholder="Enter first name"
+                                    placeholder="Introduceți prenumele"
                                     name="first_name"
                                     value={formData.first_name}
                                     onChange={onChange}
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Last Name</label>
+                                <label>Nume</label>
                                 <input
                                     type="text"
                                     className="form-control custom-input"
-                                    placeholder="Enter last name"
+                                    placeholder="Introduceți numele de familie"
                                     name="last_name"
                                     value={formData.last_name}
                                     onChange={onChange}
@@ -75,24 +75,24 @@ const EditSecretary = ({fetchSecretary, updateSecretary, secretary, error}) => {
                                 <input
                                     type="email"
                                     className="form-control custom-input"
-                                    placeholder="Enter email"
+                                    placeholder="Introduceți adresa de email"
                                     name="email"
                                     value={formData.email}
                                     onChange={onChange}
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Title</label>
+                                <label>Titlu</label>
                                 <input
                                     type="text"
                                     className="form-control custom-input"
-                                    placeholder="Enter title"
+                                    placeholder="Introduceți titlul"
                                     name="title"
                                     value={formData.title}
                                     onChange={onChange}
                                 />
                             </div>
-                            <button type="submit" className="btn btn-primary custom-button">Submit</button>
+                            <button type="submit" className="btn btn-primary custom-button">Modifică secretară</button>
                         </>
                     )}
                 </form>

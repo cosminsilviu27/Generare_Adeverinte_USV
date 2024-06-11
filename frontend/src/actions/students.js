@@ -20,7 +20,8 @@ import {
 } from "./types";
 
 
-export const updateStudentsList = (file) => async (dispatch) => {
+export const updateStudentsList = (file, navigate) => async (dispatch) => {
+
     const config = {
         headers: {
             'Content-Type': 'multipart/form-data', 'X-CSRFToken': Cookies.get('csrftoken')
@@ -49,7 +50,8 @@ export const updateStudentsList = (file) => async (dispatch) => {
             });
 
             console.log('UPDATE STUDENTS LIST SUCCESS');
-            window.location.href = `${process.env.REACT_APP_API_URL}/get-students-list`
+            navigate(`/get-students-list`);
+
         } else if (res.data.fileError) {
             dispatch({
                 type: UPDATE_STUDENTS_FILE_ERROR, payload: res.data.fileError
@@ -97,7 +99,8 @@ export const fetchStudentsList = () => async dispatch => {
     }
 };
 
-export const createStudent = (formData) => async (dispatch) => {
+export const createStudent = (formData, navigate) => async (dispatch) => {
+
     const config = {
         headers: {
             'X-CSRFToken': Cookies.get('csrftoken')
@@ -122,7 +125,8 @@ export const createStudent = (formData) => async (dispatch) => {
             dispatch({
                 type: CREATE_STUDENT_SUCCESS
             });
-            window.location.href = `${process.env.REACT_APP_API_URL}/get-students-list`;
+
+            navigate(`/get-students-list`);
         }
     } catch (error) {
         dispatch({
@@ -169,7 +173,8 @@ export const fetchStudent = (studentId) => async (dispatch) => {
 };
 
 // Action to update a specific student's information
-export const updateStudent = (studentId, formData) => async (dispatch) => {
+export const updateStudent = (studentId, formData, navigate) => async (dispatch) => {
+
     const config = {
         headers: {
             'X-CSRFToken': Cookies.get('csrftoken')
@@ -193,7 +198,8 @@ export const updateStudent = (studentId, formData) => async (dispatch) => {
             dispatch({
                 type: UPDATE_STUDENT_SUCCESS
             });
-            window.location.reload();
+
+            navigate(`/get-students-list`);
         }
     } catch (error) {
         dispatch({

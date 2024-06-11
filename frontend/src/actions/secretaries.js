@@ -19,7 +19,7 @@ import {
 
 
 // Action to update the list of secretaries
-export const updateSecretariesList = (file) => async (dispatch) => {
+export const updateSecretariesList = (file, navigate) => async (dispatch) => {
     const config = {
         headers: {
             'Content-Type': 'multipart/form-data', 'X-CSRFToken': Cookies.get('csrftoken')
@@ -48,7 +48,8 @@ export const updateSecretariesList = (file) => async (dispatch) => {
             });
 
             console.log('UPDATE SECRETARIES LIST SUCCESS');
-            window.location.href = `${process.env.REACT_APP_API_URL}/get-secretaries-list`
+
+            navigate(`/get-secretaries-list`);
         } else if (res.data.fileError) {
             dispatch({
                 type: UPDATE_SECRETARIES_FILE_ERROR, payload: res.data.fileError
@@ -137,7 +138,7 @@ export const fetchSecretary = (secretaryId) => async (dispatch) => {
 };
 
 // Action to update a specific secretary's information
-export const updateSecretary = (secretaryId, formData) => async (dispatch) => {
+export const updateSecretary = (secretaryId, formData, navigate) => async (dispatch) => {
     const config = {
         headers: {
             'X-CSRFToken': Cookies.get('csrftoken')
@@ -161,7 +162,8 @@ export const updateSecretary = (secretaryId, formData) => async (dispatch) => {
             dispatch({
                 type: UPDATE_SECRETARY_SUCCESS
             });
-            window.location.reload();
+
+            navigate(`/get-secretaries-list`);
         }
     } catch (error) {
         dispatch({

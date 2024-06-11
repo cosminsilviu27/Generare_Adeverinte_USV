@@ -27,6 +27,11 @@ import FacultiesList from "./containers/faculty/FacultiesList";
 import CreateStudent from "./containers/student/CreateStudent";
 import EditStudent from "./containers/student/EditStudent";
 import CertificatesList from "./containers/certificate/CertificatesList";
+import ApproveCertificate from "./containers/certificate/ApproveCertificate";
+import RejectCertificate from "./containers/certificate/RejectCertificate";
+import ApprovedCertificatesList from "./containers/certificate/ApprovedCertificatesList";
+import RejectedCertificatesList from "./containers/certificate/RejectedCertificatesList";
+import EditCertificate from "./containers/certificate/EditCertificate";
 
 const App = () => (
     <Provider store={store}>
@@ -80,6 +85,11 @@ const App = () => (
                     }/>
                     <Route exact path='/get-faculties-list' element={<FacultiesList/>}/>
                     <Route exact path='/get-certificates-list' element={<CertificatesList/>}/>
+                    <Route exact path='/get-approved-certificates-list' element={<ApprovedCertificatesList/>}/>
+                    <Route exact path='/get-rejected-certificates-list' element={<RejectedCertificatesList/>}/>
+                    <Route exact path='/approve-certificate/:processing_position' element={<ApproveCertificate/>}/>
+                    <Route exact path='/reject-certificate/:processing_position' element={<RejectCertificate/>}/>
+                    <Route exact path='/edit-certificate/:certificate_id' element={<EditCertificate/>}/>
                     <Route path='/dashboard' element={
                         <PrivateRoute allowedRoles={['username']}>
                                <AdminProfile/>

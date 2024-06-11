@@ -20,6 +20,12 @@ const SecretaryDashboard = ({isAuthenticated}) => {
         navigate('/get-certificates-list');
     }
 
+    const handleRedirectToApprovedCertificates = () => {
+        navigate('/get-approved-certificates-list');
+    }
+    const handleRedirectToRejectedCertificates = () => {
+        navigate('/get-rejected-certificates-list');
+    }
     const buttonStyle = {
         width: '100%', height: '53px', marginBottom: '15px', fontSize: '20px',
     };
@@ -57,6 +63,18 @@ const SecretaryDashboard = ({isAuthenticated}) => {
             </div>
             <div style={flexContainerStyle}>
                 <div style={flexItemStyle}>
+                <button className='btn btn-info' style={buttonStyle} onClick={handleRedirectToApprovedCertificates}>
+                    Vizualizează Lista Adeverințelor Aprobate
+                </button>
+            </div>
+            <div style={flexItemStyle}>
+                <button className='btn btn-success' style={buttonStyle} onClick={handleRedirectToRejectedCertificates}>
+                    Vizualizează Lista Adeverințelor Refuzate
+                </button>
+            </div>
+        </div>
+        <div style={flexContainerStyle}>
+            <div style={flexItemStyle}>
                     <button className='btn btn-info' style={buttonStyle} onClick={handleRedirectToStudents}>
                         Vizualizează Lista Studenților
                     </button>

@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {useParams} from 'react-router-dom'; // Import useParams hook
+import {useNavigate, useParams} from 'react-router-dom'; // Import useParams hook
 import {connect} from 'react-redux';
 import {fetchStudent, updateStudent} from '../../actions/students';
 import CSRFToken from "../../components/CSRFToken";
 
 const EditStudent = ({fetchStudent, updateStudent, student, error}) => {
+    const navigate = useNavigate();
+
     const {student_id} = useParams(); // Access route parameter using useParams
 
      useEffect(() => {
@@ -45,13 +47,12 @@ const EditStudent = ({fetchStudent, updateStudent, student, error}) => {
 
     const onSubmit = e => {
         e.preventDefault();
-        updateStudent(student_id, formData);
+        updateStudent(student_id, formData, navigate);
     };
 
     return (
         <div className="container">
-            <CSRFToken/>
-            <h1 className="mt-3">Edit Student:</h1>
+            <h1 className="mt-3">Modifică Student:</h1>
 
             {error && <p>{error}</p>}
             <div className="mt-3">

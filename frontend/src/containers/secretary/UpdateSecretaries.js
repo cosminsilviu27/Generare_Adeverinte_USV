@@ -2,10 +2,12 @@ import React, {useState} from 'react';
 import CSRFToken from '../../components/CSRFToken';
 import {updateSecretariesList} from "../../actions/secretaries";
 import {connect} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
 const UploadSecretariesForm = ({updateSecretariesList}) => {
     const [file, setFile] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
 
     const handleFileChange = e => setFile(e.target.files[0]);
 
@@ -25,7 +27,7 @@ const UploadSecretariesForm = ({updateSecretariesList}) => {
             return;
         }
 
-        updateSecretariesList(file);
+        updateSecretariesList(file, navigate);
     };
 
     return (
@@ -34,7 +36,6 @@ const UploadSecretariesForm = ({updateSecretariesList}) => {
             <p className='mt-3 mb-3'>Încărcați un fișier ce conține noua listă de secretare:</p>
 
             <form onSubmit={e => onSubmit(e)}>
-                <CSRFToken/>
                 <input
                     className='form-control'
                     type='file'

@@ -2,8 +2,10 @@ import React, {useState} from 'react';
 import {connect} from 'react-redux';
 import {createStudent} from '../../actions/students';
 import CSRFToken from "../../components/CSRFToken";
+import {useNavigate} from "react-router-dom";
 
 const CreateStudent = ({createStudent, error}) => {
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -21,12 +23,11 @@ const CreateStudent = ({createStudent, error}) => {
 
     const onSubmit = e => {
         e.preventDefault();
-        createStudent(formData);
+        createStudent(formData, navigate);
     };
 
     return (
         <div className="container">
-            <CSRFToken/>
             <h1 className="mt-3">Adaugă Student:</h1>
 
             {error && <p>{error}</p>}

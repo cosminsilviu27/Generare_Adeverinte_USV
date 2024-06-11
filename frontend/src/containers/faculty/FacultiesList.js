@@ -1,7 +1,8 @@
-import React, {useEffect} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {fetchFacultiesList} from '../../actions/faculties';
 import CSRFToken from '../../components/CSRFToken';
+import {Link} from "react-router-dom";
 
 const FacultiesList = ({fetchFacultiesList, faculties, error}) => {
     useEffect(() => {
@@ -10,7 +11,11 @@ const FacultiesList = ({fetchFacultiesList, faculties, error}) => {
 
     return (
         <div className="container">
-            <CSRFToken/>
+             <div className='mt-3'>
+                <Fragment>
+                    <Link to={'/update-faculties-list'} className='btn btn-primary'>Modifică lista de facultăți</Link>
+                </Fragment>
+            </div>
             <h1 className="mt-3">Lista de facultăți:</h1>
 
             {error && <p>{error}</p>}
