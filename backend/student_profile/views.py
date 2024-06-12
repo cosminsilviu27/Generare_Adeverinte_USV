@@ -3,6 +3,8 @@ from rest_framework import permissions, generics
 from rest_framework.response import Response
 from rest_framework import status
 import pandas as pd
+
+from faculty.models import Faculty
 from .models import StudentProfile
 from .serializers import StudentSerializer
 from unicodedata import normalize
@@ -53,7 +55,7 @@ def validateStudent(row):
         return student
 
     # Funding status validation (const string check)
-    allowed_statuses = ['buget', 'taxa']
+    allowed_statuses = ['buget', 'taxă']
     if row['funding'].lower() not in allowed_statuses:
         student['valid'] = False
         return student
@@ -74,6 +76,7 @@ def validateStudent(row):
     student['study_year'] = row['study_year']
     student['study_domain'] = row['study_domain']
     student['study_form'] = row.get('study_form', 'IF')
+    student['faculty'] = row.get('faculty')
 
     return student
 
@@ -108,6 +111,8 @@ class UpdateStudentsList(APIView):
 
                 if student['valid']:
                     try:
+                        faculty = Faculty.objects.filter(short_name=student['faculty']).first()
+
                         StudentProfile.objects.create(
                             email=student['email'],
                             study_program_name=student['study_program_name'],
@@ -117,7 +122,8 @@ class UpdateStudentsList(APIView):
                             study_form=student['study_form'],
                             funding=student['funding'],
                             full_name=student['full_name'],
-                            sex=student['sex']
+                            sex=student['sex'],
+                            faculty=faculty
                         )
                         success_count += 1
                     except Exception as e:
@@ -144,6 +150,8 @@ class CreateStudent(APIView):
             student = validateStudent(request.data)
 
             if student['valid']:
+                faculty = Faculty.objects.filter(short_name=student['faculty']).first()
+
                 StudentProfile.objects.create(
                     email=student['email'],
                     study_program_name=student['study_program_name'],
@@ -153,7 +161,8 @@ class CreateStudent(APIView):
                     study_form=student['study_form'],
                     funding=student['funding'],
                     full_name=student['full_name'],
-                    sex=student['sex']
+                    sex=student['sex'],
+                    faculty=faculty
                 )
             else:
                 return Response({'error': 'Something went wrong: Student data not valid'},

@@ -38,7 +38,7 @@ const FacultiesList = ({fetchFacultiesList, faculties, error}) => {
                             <td>{faculty.short_name}</td>
                             <td>{faculty.current_academic_year}</td>
                             <td>{faculty.dean_name}</td>
-                            <td>{faculty.chief_secretary_name}</td>
+                            <td>{faculty.chief_secretary.first_name} {faculty.chief_secretary.last_name}</td>
                         </tr>
                     ))}
                     </tbody>

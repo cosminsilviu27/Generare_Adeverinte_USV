@@ -32,6 +32,7 @@ import RejectCertificate from "./containers/certificate/RejectCertificate";
 import ApprovedCertificatesList from "./containers/certificate/ApprovedCertificatesList";
 import RejectedCertificatesList from "./containers/certificate/RejectedCertificatesList";
 import EditCertificate from "./containers/certificate/EditCertificate";
+import PrintCertificates from "./containers/certificate/PrintCertificates";
 
 const App = () => (
     <Provider store={store}>
@@ -85,6 +86,7 @@ const App = () => (
                     }/>
                     <Route exact path='/get-faculties-list' element={<FacultiesList/>}/>
                     <Route exact path='/get-certificates-list' element={<CertificatesList/>}/>
+                    <Route exact path='/print-certificates' element={<PrintCertificates/>}/>
                     <Route exact path='/get-approved-certificates-list' element={<ApprovedCertificatesList/>}/>
                     <Route exact path='/get-rejected-certificates-list' element={<RejectedCertificatesList/>}/>
                     <Route exact path='/approve-certificate/:processing_position' element={<ApproveCertificate/>}/>

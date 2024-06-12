@@ -21,7 +21,7 @@ label {
 .custom-input {
     border: 1px solid #4F94E2;
     border-radius: 5px;
-    padding: 10px;
+    padding: 6px 10px;
     color: #272F54;
 }
 
@@ -44,4 +44,63 @@ label {
 
 p {
     color: #A22531;
+}
+
+/* CSS Adeverinta */
+.print-container {
+    background-color: #FEFEFE;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+.page-break {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.print-certificate-container {
+    width: 49%;
+    margin: 0;
+    font-family: "Times New Roman", Times, serif;
+    line-height: 1.6;
+}
+
+.print-certificate-header {
+    text-align: left;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 1.2;
+}
+
+.print-nr {
+    text-align: right;
+}
+
+.print-certificate-content {
+    text-align: justify;
+    font-size: 14px;
+}
+
+.print-certificate-title {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 25px 0 35px;
+    display: block;
+}
+
+.print-certificate-footer {
+    line-height: 1.2;
+    margin-top: 40px;
+    font-size: 14px;
+}
+
+@media print {
+  .print-hide {
+    display: none !important;
+  }
 }

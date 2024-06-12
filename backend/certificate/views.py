@@ -1,6 +1,10 @@
+import csv
+import json
 import os
 from datetime import datetime
 
+from django.http import HttpResponse
+from openpyxl.workbook import Workbook
 from rest_framework import status
 from rest_framework.response import Response
 import gspread
@@ -108,11 +112,15 @@ def get_google_sheets_data(processing_position=None):
         modified_data = []
         for idx, entry in enumerate(data):
             if (processing_position is not None) or (
-            not Certificate.objects.filter(processing_position=idx + 1).first()):
+                    not Certificate.objects.filter(processing_position=idx + 1).first()):
+
+                email = entry["Email Address"]
+
                 modified_entry = {
                     "registration_date": entry["Timestamp"],
                     "purpose": entry["Motiv solicitare adeverință"],
-                    "processing_position": processing_position if processing_position is not None else (idx + 1)
+                    "processing_position": processing_position if processing_position is not None else (idx + 1),
+                    "email": email
                 }
 
                 today = timezone.now().date()
@@ -123,12 +131,10 @@ def get_google_sheets_data(processing_position=None):
                     modified_entry["def_number"] = nr
 
                 # Retrieve student information from StudentProfile object
-                email = entry["Email Address"]
                 student_profile = StudentProfile.objects.filter(email=email).first()
 
                 if student_profile:
                     modified_entry["student_data"] = {
-                        "email": email,
                         "full_name": student_profile.full_name
                     }
 
@@ -162,6 +168,16 @@ class GetRejectedCertificatesList(APIView):
     def get(self, request, format=None):
         try:
             certificates = Certificate.objects.filter(status='rejected')
+            serializer = CertificateSerializer(certificates, many=True)
+            return Response({"success": True, "data": serializer.data})
+        except Exception as e:
+            return Response({"error": e})
+
+
+class GetCertificatesForPrint(APIView):
+    def get(self, request, format=None):
+        try:
+            certificates = Certificate.objects.filter(status="approved").filter(was_printed=False)
             serializer = CertificateSerializer(certificates, many=True)
             return Response({"success": True, "data": serializer.data})
         except Exception as e:
@@ -261,9 +277,9 @@ class EditCertificateDetailView(APIView):
 
     def put(self, request, certificate_id):
         try:
-            certificateVal = validateCertificate(request.data)
+            purpose = request.data['purpose'].strip()
 
-            if certificateVal['valid']:
+            if len(purpose) > 0:
                 certificate = Certificate.objects.get(id=certificate_id)
                 serializer = CertificateSerializer(certificate, data=request.data)
                 if serializer.is_valid():
@@ -279,29 +295,60 @@ class EditCertificateDetailView(APIView):
         except Exception as e:
             return Response({'error': f'Something went wrong: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-import csv
-from django.http import HttpResponse
-from .models import Certificate  # Adjust the import based on your actual model
 
-def download_certificates(request):
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="certificates.csv"'
+class DownloadCertificates(APIView):
+    def get(self, request):
+        try:
+            # Create a workbook and select the active worksheet
+            workbook = Workbook()
+            worksheet = workbook.active
+            worksheet.title = 'Certificates'
 
-    writer = csv.writer(response)
-    # Write the headers
-    writer.writerow(['Nume și prenume student', 'Email student', 'Motiv solicitare', 'Data solicitării'])
+            # Define the headers
+            headers = ['Număr înregistrare adeverință',
+                       'Data solicitării',
+                       'Nume și prenume student',
+                       'Email student',
+                       'Motiv solicitare',
+                       'Adeverință printată']
+            worksheet.append(headers)
 
-    # Fetch the certificates data
-    certificates = Certificate.objects.all().values_list(
-        'student_data__full_name', 'student_data__email', 'purpose', 'registration_date'
-    )
+            # Fetch the certificates data
+            certificates = Certificate.objects.filter(status='approved').select_related('student')
 
-    # Write data rows
-    for certificate in certificates:
-        writer.writerow(certificate)
-        print(writer.writerow(certificate))
+            # Write data rows
+            for certificate in certificates:
+                registration_number = certificate.registration_number
+                registration_date = certificate.registration_date
+                student_full_name = certificate.student.full_name
+                student_email = certificate.student.email
+                purpose = certificate.purpose
+                was_printed = 'da' if certificate.was_printed else 'nu'
 
-    return response
+                worksheet.append([
+                    registration_number, registration_date, student_full_name, student_email, purpose, was_printed
+                ])
 
+            # Save the workbook to a response
+            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename="certificates.xlsx"'
+            workbook.save(response)
 
+            return response
+        except Exception as e:
+            return Response({'error': f'Something went wrong: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class SetCertificatesPrinted(APIView):
+    def post(self, request):
+        try:
+            certificates_ids = json.loads(request.POST.get('certificates_ids'))
+            certificates = Certificate.objects.filter(id__in=certificates_ids)
+
+            for certificate in certificates:
+                certificate.was_printed = True
+                certificate.save()  # Save the updated certificate
+
+            return Response({'success': 'Successfully updated printed certificates in DB'},
+                            status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': f'Something went wrong: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

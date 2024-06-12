@@ -21,7 +21,7 @@ const StudentsList = ({fetchStudentsList, students, error, isAuthenticated, logi
     return (
         <div className="container">
             <div className='mt-3'>
-                {loginMethod === 'username' ? adminBtns : secretaryBtns}
+                {loginMethod == 'username' ? adminBtns : secretaryBtns}
             </div>
             <h1 className="mt-3">Lista de studenți înmatriculați:</h1>
 

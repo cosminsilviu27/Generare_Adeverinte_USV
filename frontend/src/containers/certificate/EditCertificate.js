@@ -1,56 +1,68 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigate, useParams} from 'react-router-dom'; // Import useParams hook
 import {connect} from 'react-redux';
-import {fetchCertificate, editCertificate} from '../../actions/certificates';
-import CSRFToken from "../../components/CSRFToken";
+import {fetchCertificate1, editCertificate} from '../../actions/certificates';
 
 function validateCertificate(formData) {
-    if (!formData.def_number || formData.def_number.trim().length == 0) {
-        return false;
+    if (formData.status == 'approved' && (!formData.def_number || formData.def_number.trim().length == 0)) {
+        return "Introduceți numărul de înregistrare pentru ziua curentă";
+    } else if (formData.status == 'rejected' && (!formData.rejection_motive || formData.rejection_motive.trim().length == 0)) {
+        return "Introduceți un motiv pentru refuz";
     }
-    return true;
+
+    return "";
 }
 
-const EditCertificate = ({fetchCertificate, editCertificate, certificate, error}) => {
+const EditCertificate = ({fetchCertificate1, editCertificate, certificate, error}) => {
     const navigate = useNavigate();
-    const {processing_position} = useParams(); // Access route parameter using useParams
+    const {certificate_id} = useParams(); // Access route parameter using useParams
 
     useEffect(() => {
-        fetchCertificate(processing_position);
-    }, [fetchCertificate, processing_position]);
+        fetchCertificate1(certificate_id);
+    }, [fetchCertificate1, certificate_id]);
 
     const [formData, setFormData] = useState({
-        def_number: '',
         student_email: '',
         student_full_name: '',
         registration_date: '',
         purpose: '',
-        processing_position: processing_position,
-        status: ''
+        id: certificate_id,
+        status: '',
+        processing_position: '',
+        registration_number: '',
+        processing_date: '',
+        def_number: '',
+        rejection_motive: ''
     });
 
     useEffect(() => {
         if (certificate) {
             setFormData({
-                def_number: certificate.def_number,
-                student_email: certificate.student_data?.email,
-                student_full_name: certificate.student_data?.full_name,
+                student_email: certificate.student?.email,
+                student_full_name: certificate.student?.full_name,
                 registration_date: certificate.registration_date,
                 purpose: certificate.purpose,
-                processing_position: processing_position,
-                status: certificate.status
+                id: certificate_id,
+                status: certificate.status,
+                processing_position: certificate.processing_position,
+                registration_number: certificate.registration_number,
+                processing_date: certificate.processing_date,
+                def_number: certificate.def_number,
+                rejection_motive: certificate.rejection_motive
             });
         }
-    }, [certificate, processing_position]);
+    }, [certificate, certificate_id]);
 
     const onChange = e => setFormData({...formData, [e.target.name]: e.target.value});
 
     const onSubmit = e => {
         e.preventDefault();
-        if (validateCertificate(formData)) {
-            editCertificate(processing_position, formData, navigate);
+        const res = validateCertificate(formData);
+
+        if (res == "") {
+            editCertificate(certificate_id, formData, navigate);
         } else {
-            alert("Introduceți numărul de înregistrare pentru ziua curentă");
+            alert(res);
         }
     };
 
@@ -95,17 +107,6 @@ const EditCertificate = ({fetchCertificate, editCertificate, certificate, error}
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Număr înregistrare adeverință</label>
-                                <input
-                                    type="text"
-                                    className="form-control custom-input"
-                                    placeholder="Introduceți numărul de înregistrare pentru ziua curentă"
-                                    name="def_number"
-                                    value={formData.def_number}
-                                    onChange={onChange}
-                                />
-                            </div>
-                            <div className="form-group">
                                 <label htmlFor="statusAdeverinta">Status adeverință</label>
                                 <select
                                     id="statusAdeverinta"
@@ -118,7 +119,32 @@ const EditCertificate = ({fetchCertificate, editCertificate, certificate, error}
                                     <option value="rejected">Respinsă</option>
                                 </select>
                             </div>
-
+                            {formData.status == 'approved' ?
+                                (<div className="form-group">
+                                    <label>Număr înregistrare adeverință</label>
+                                    <input
+                                        type="text"
+                                        className="form-control custom-input"
+                                        placeholder="Introduceți numărul de înregistrare pentru ziua curentă"
+                                        name="def_number"
+                                        value={formData.def_number}
+                                        onChange={onChange}
+                                    />
+                                </div>)
+                                :
+                                (<div className="form-group">
+                                        <label>Motiv refuz adeverință</label>
+                                        <input
+                                            type="text"
+                                            className="form-control custom-input"
+                                            placeholder="Introduceți un motiv pentru refuz"
+                                            name="rejection_motive"
+                                            value={formData.rejection_motive}
+                                            onChange={onChange}
+                                        />
+                                    </div>
+                                )
+                            }
                             <button type="submit" className="btn btn-primary custom-button">Modifică adeverința</button>
                         </>
                     )}
@@ -133,4 +159,4 @@ const mapStateToProps = (state) => ({
     error: state.certificate.error
 });
 
-export default connect(mapStateToProps, {fetchCertificate, editCertificate})(EditCertificate);
+export default connect(mapStateToProps, {fetchCertificate1, editCertificate})(EditCertificate);

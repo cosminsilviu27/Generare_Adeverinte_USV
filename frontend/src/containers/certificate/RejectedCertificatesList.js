@@ -38,7 +38,7 @@ const RejectedCertificatesList = ({fetchRejectedCertificatesList, rejectedCertif
                                     <td>{certificate.registration_date}</td>
                                     <td>
                                         <Link to={`/edit-certificate/${certificate.id}`}
-                                              className="btn btn-primary mr-2">Modifică cerere</Link>
+                                              className="btn btn-primary mr-2">Modifică</Link>
                                     </td>
                                 </tr>
                             ))}

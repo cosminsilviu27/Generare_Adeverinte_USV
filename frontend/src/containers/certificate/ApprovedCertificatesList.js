@@ -1,17 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {connect} from 'react-redux';
-import {fetchApprovedCertificatesList} from '../../actions/certificates';
+import {fetchApprovedCertificatesList, downloadCertificates} from '../../actions/certificates';
 import {Link} from "react-router-dom";
 import {TailSpin} from "react-loader-spinner";
 
-const ApprovedCertificatesList = ({fetchApprovedCertificatesList, approvedCertificates, error}) => {
+const ApprovedCertificatesList = ({fetchApprovedCertificatesList, downloadCertificates, approvedCertificates, error}) => {
 
     useEffect(() => {
         fetchApprovedCertificatesList();
     }, [fetchApprovedCertificatesList]);
 
+    const handleDownload = () => {
+        downloadCertificates();
+    };
+
     return (
         <div className="container">
+            <div className='mt-3'>
+                <Fragment>
+                    <Link to={'/print-certificates'} className='btn btn-primary'>Printează adeverințe aprobate</Link>
+                </Fragment>
+                <Fragment>
+                    <button className="btn btn-primary ml-3" onClick={handleDownload}>Descarcă raport adeverințe aprobate</button>
+                </Fragment>
+            </div>
+
             <h1 className="mt-3">Lista de adeverințe aprobate:</h1>
 
             {error && <p>{error}</p>}
@@ -26,6 +39,7 @@ const ApprovedCertificatesList = ({fetchApprovedCertificatesList, approvedCertif
                                 <th>Email student</th>
                                 <th>Motiv solicitare</th>
                                 <th>Data solicitării</th>
+                                <th>Printată</th>
                                 <th>Acțiuni</th>
                             </tr>
                             </thead>
@@ -36,11 +50,10 @@ const ApprovedCertificatesList = ({fetchApprovedCertificatesList, approvedCertif
                                     <td>{certificate.student?.email ?? "-"}</td>
                                     <td>{certificate.purpose}</td>
                                     <td>{certificate.registration_date}</td>
+                                    <td>{certificate.was_printed ? 'Da' : 'Nu'}</td>
                                     <td>
                                         <Link to={`/edit-certificate/${certificate.id}`}
-                                              className="btn btn-primary mr-2">Modifică cerere</Link>
-                                        <Link to={`/print-certificate/${certificate.id}`}
-                                              className="btn btn-primary ml-2">Listează cerere</Link>
+                                              className="btn btn-primary mr-2">Modifică</Link>
                                     </td>
                                 </tr>
                             ))}
@@ -61,4 +74,4 @@ const mapStateToProps = (state) => ({
     error: state.certificate.error
 });
 
-export default connect(mapStateToProps, {fetchApprovedCertificatesList})(ApprovedCertificatesList);
+export default connect(mapStateToProps, {fetchApprovedCertificatesList, downloadCertificates})(ApprovedCertificatesList);
