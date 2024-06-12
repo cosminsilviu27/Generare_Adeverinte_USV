@@ -9,7 +9,7 @@ const Navbar = ({ isAuthenticated, loginMethod, user, logoutAdmin, logoutSecreta
     const adminLinks = (
         <Fragment>
             <li className='nav-item'>
-                <NavLink className='nav-link' to='/dashboard'>Admin Dashboard</NavLink>
+                <NavLink className='nav-link' to='/dashboard'>Admin Dashboardddd</NavLink>
             </li>
             <li className='nav-item'>
                 <NavLink className='nav-link' to='/admin'>Admin Profile</NavLink>

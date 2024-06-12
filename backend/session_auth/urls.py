@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import TemplateView
+# from social.views import oauth_callback
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -12,8 +13,8 @@ urlpatterns = [
     path('faculties/', include('faculty.urls')),
     path('certificates/', include('certificate.urls')),
     path('social/', include('social.urls')),
-    # Specific Django Template for login
-    # path('accounts/google/login/', TemplateView.as_view(template_name='accounts/login.html'), name='login'),
+
+    # path('accounts/google/login/callback/', oauth_callback, name='oauth_callback'),
 ]
 
 # Catch all for React routes

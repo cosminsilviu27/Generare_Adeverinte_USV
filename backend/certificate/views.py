@@ -278,3 +278,30 @@ class EditCertificateDetailView(APIView):
             return Response({'error': 'Certificate not found'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'error': f'Something went wrong: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+import csv
+from django.http import HttpResponse
+from .models import Certificate  # Adjust the import based on your actual model
+
+def download_certificates(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="certificates.csv"'
+
+    writer = csv.writer(response)
+    # Write the headers
+    writer.writerow(['Nume și prenume student', 'Email student', 'Motiv solicitare', 'Data solicitării'])
+
+    # Fetch the certificates data
+    certificates = Certificate.objects.all().values_list(
+        'student_data__full_name', 'student_data__email', 'purpose', 'registration_date'
+    )
+
+    # Write data rows
+    for certificate in certificates:
+        writer.writerow(certificate)
+        print(writer.writerow(certificate))
+
+    return response
+
+
