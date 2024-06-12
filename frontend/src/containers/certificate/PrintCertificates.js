@@ -5,11 +5,14 @@ import {TailSpin} from "react-loader-spinner";
 import SingleCertificate from "./SingleCertificate";
 
 const PrintCertificates = ({fetchCertificatesForPrint, setCertificatesAsPrinted, certificatesForPrint, error}) => {
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        fetchCertificatesForPrint();
+        setIsLoading(true);
+        fetchCertificatesForPrint().then(() => {
+            setIsLoading(false); 
+        });
     }, [fetchCertificatesForPrint]);
-
     const handlePrint = () => {
         window.print();
         setCertificatesAsPrinted(certificatesForPrint.map((el) => (el.id)));
@@ -25,7 +28,12 @@ const PrintCertificates = ({fetchCertificatesForPrint, setCertificatesAsPrinted,
         <div className="print-container">
             {error && <div className="error-message">{error}</div>}
 
-            {certificatesForPrint && certificatesForPrint.length > 0 ?
+            {isLoading ? (
+                <div className="justify-content-center d-flex mt-5">
+                    <TailSpin height="80" width="80" color="#4fa94d" ariaLabel="tail-spin-loading" radius="1"
+                              wrapperStyle={{}} wrapperClass="" visible={true}/>
+                </div>
+            ) : certificatesForPrint && certificatesForPrint.length > 0 ?
                 (
                     <>
                         <button className="mt-3 mb-4 btn btn-info mx-auto d-block print-hide" onClick={handlePrint}>Printează Adeverințe</button>
@@ -40,10 +48,7 @@ const PrintCertificates = ({fetchCertificatesForPrint, setCertificatesAsPrinted,
                         </div>
                     </>
                 ) :
-                (<div className="justify-content-center d-flex mt-5">
-                    <TailSpin height="80" width="80" color="#4fa94d" ariaLabel="tail-spin-loading" radius="1"
-                              wrapperStyle={{}} wrapperClass="" visible={true}/>
-                </div>)
+                (<p>Niciun rezultat</p>)
             }
         </div>
     );

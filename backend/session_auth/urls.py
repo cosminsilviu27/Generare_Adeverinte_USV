@@ -13,8 +13,7 @@ urlpatterns = [
     path('faculties/', include('faculty.urls')),
     path('certificates/', include('certificate.urls')),
     path('social/', include('social.urls')),
-
-    # path('accounts/google/login/callback/', oauth_callback, name='oauth_callback'),
+    path('profiles/', include('profiles.urls')),
 ]
 
 # Catch all for React routes

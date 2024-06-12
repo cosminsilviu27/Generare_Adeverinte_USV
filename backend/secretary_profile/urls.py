@@ -5,4 +5,5 @@ urlpatterns = [
     path('updateSecretariesList', UpdateSecretariesList.as_view()),
     path('getSecretariesList', SecretaryListAPIView.as_view()),
     path('editSecretary/<int:secretary_id>/', SecretaryDetailView.as_view()),
+    path('addSecretary', SecretaryDetailView.as_view())
 ]

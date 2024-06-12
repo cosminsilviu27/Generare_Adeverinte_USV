@@ -60,3 +60,33 @@ class FacultyListAPIView(APIView):
             return Response({"success": True, "data": serializer.data})
         except Exception as e:
             return Response({"error": e})
+
+
+class EditFacultyDetailView(APIView):
+    def get(self, request, faculty_id):
+        try:
+            faculty = Faculty.objects.get(id=faculty_id)
+            serializer = FacultySerializer(faculty)
+            return Response({"success": True, "data": serializer.data})
+        except Exception as e:
+            return Response({"error": e})
+
+    def put(self, request, faculty_id):
+        try:
+            faculty = Faculty.objects.get(id=faculty_id)
+            chief_secretary_first_name = request.data.get('chief_secretary_first_name')
+            chief_secretary_last_name = request.data.get('chief_secretary_last_name')
+
+            chief_secretary = SecretaryProfile.objects.filter(first_name=chief_secretary_first_name, last_name=chief_secretary_last_name).first()
+            if chief_secretary is None:
+                return Response({'error': 'Chief Secretary not found'}, status=status.HTTP_404_NOT_FOUND)
+
+            request.data['chief_secretary'] = chief_secretary.id
+
+            serializer = FacultySerializer(faculty, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"success": True, "data": serializer.data})
+            return Response({"error": serializer.errors})
+        except Exception as e:
+            return Response({"error": e})

@@ -12,7 +12,12 @@ import {
     UPDATE_STUDENT_REQUEST,
     UPDATE_STUDENT_SUCCESS,
     UPDATE_STUDENT_FAILURE,
-    FETCH_STUDENT_REQUEST, FETCH_STUDENT_SUCCESS, FETCH_STUDENT_FAILURE
+    FETCH_STUDENT_REQUEST,
+    FETCH_STUDENT_SUCCESS,
+    FETCH_STUDENT_FAILURE,
+    DELETE_STUDENT_REQUEST,
+    DELETE_STUDENT_SUCCESS,
+    DELETE_STUDENT_FAILURE
 } from '../actions/types';
 
 const initialState = {
@@ -61,14 +66,14 @@ const student = (state = initialState, action) => {
                 loading: false,
                 error: null
             };
-            
+
         case CREATE_STUDENT_FAILURE:
             return {
                 ...state,
                 loading: false,
                 error: payload
             };
-            case UPDATE_STUDENT_REQUEST:
+        case UPDATE_STUDENT_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -124,6 +129,25 @@ const student = (state = initialState, action) => {
                 loading: false,
                 error: payload
             };
+        case DELETE_STUDENT_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: null
+            };
+        case DELETE_STUDENT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: null
+            };
+        case DELETE_STUDENT_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: payload
+            };
+
         default:
             return state;
     }

@@ -8,6 +8,10 @@ import {
     UPDATE_FACULTIES_FAILURE,
     UPDATE_FACULTIES_FILE_ERROR,
     UPDATE_FACULTIES_REQUEST,
+    FETCH_FACULTY_REQUEST,
+    FETCH_FACULTY_FAILURE,
+    FETCH_FACULTY_SUCCESS,
+    UPDATE_FACULTY_REQUEST, UPDATE_FACULTY_FAILURE, UPDATE_FACULTY_SUCCESS,
 } from "./types";
 
 export const updateFacultiesList = (file, navigate) => async (dispatch) => {
@@ -85,6 +89,76 @@ export const fetchFacultiesList = () => async dispatch => {
         console.log(error.message);
         dispatch({
             type: FETCH_FACULTIES_FAILURE, error: error.message
+        });
+    }
+};
+
+export const fetchFaculty = (faculty_id) => async dispatch => {
+    const config = {
+        headers: {
+            'X-CSRFToken': Cookies.get('csrftoken')
+        }
+    };
+
+    try {
+        dispatch({
+            type: FETCH_FACULTY_REQUEST
+        });
+
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/faculties/editFaculty/${faculty_id}/`, config);
+
+        if (res.data.error) {
+            console.log('Failed to fetch faculty ' + res.data.error);
+
+            dispatch({
+                type: FETCH_FACULTY_FAILURE, payload: res.data.error
+            });
+        } else if (res.data.success) {
+            dispatch({
+                type: FETCH_FACULTY_SUCCESS, payload: res.data.data
+            });
+        }
+    } catch (error) {
+        console.log(error.message);
+
+        dispatch({
+            type: FETCH_FACULTY_FAILURE, payload: error.message
+        });
+    }
+};
+
+export const updateFaculty = (faculty_id, formData, navigate) => async dispatch => {
+    const config = {
+        headers: {
+            'X-CSRFToken': Cookies.get('csrftoken')
+        }
+    };
+
+    try {
+        dispatch({
+            type: UPDATE_FACULTY_REQUEST
+        });
+
+        const res = await axios.put(`${process.env.REACT_APP_API_URL}/faculties/editFaculty/${faculty_id}/`, formData, config);
+
+        if (res.data.error) {
+            console.log('Failed to update faculty ' + res.data.error);
+
+            dispatch({
+                type: UPDATE_FACULTY_FAILURE, payload: res.data.error
+            });
+        } else if (res.data.success) {
+            dispatch({
+                type: UPDATE_FACULTY_SUCCESS
+            });
+
+            navigate(`/get-faculties-list`);
+        }
+    } catch (error) {
+        console.log(error.message);
+
+        dispatch({
+            type: UPDATE_FACULTY_FAILURE, payload: error.message
         });
     }
 };

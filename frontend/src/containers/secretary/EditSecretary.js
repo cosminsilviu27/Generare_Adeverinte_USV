@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {useNavigate, useParams} from 'react-router-dom'; // Import useParams hook
 import {connect} from 'react-redux';
 import {fetchSecretary, updateSecretary} from '../../actions/secretaries';
-import CSRFToken from "../../components/CSRFToken";
 
 const EditSecretary = ({fetchSecretary, updateSecretary, secretary, error}) => {
     const {secretary_id} = useParams(); // Access route parameter using useParams

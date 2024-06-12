@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {fetchSecretariesList} from '../../actions/secretaries';
 import CSRFToken from '../../components/CSRFToken';
@@ -6,36 +6,51 @@ import {Link} from 'react-router-dom';
 import {TailSpin} from "react-loader-spinner";
 
 const SecretariesList = ({fetchSecretariesList, secretaries, error}) => {
+
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
-        fetchSecretariesList();
+        setIsLoading(true);
+        fetchSecretariesList().then(() => {
+            setIsLoading(false);
+        });
     }, [fetchSecretariesList]);
 
     return (
         <div className="container">
             <div className='mt-3'>
                 <Fragment>
-                    <Link to={'/update-secretaries-list'} className='btn btn-primary'>Modifică lista de secretare</Link>
+                    <Link to={'/update-secretaries-list'} className='btn btn-primary mr-3'>Modifică lista de
+                        secretare</Link>
+                </Fragment>
+                <Fragment>
+                    <Link to={'/add-secretary'} className='btn btn-primary'>Adaugă secretară</Link>
                 </Fragment>
             </div>
             <h1 className="mt-3">Lista de secretare:</h1>
 
             {error && <p>{error}</p>}
 
-            {secretaries && secretaries.length > 0 ?
+            {isLoading ? (
+                <div className="justify-content-center d-flex mt-5">
+                    <TailSpin height="80" width="80" color="#4fa94d" ariaLabel="tail-spin-loading" radius="1"
+                              wrapperStyle={{}} wrapperClass="" visible={true}/>
+                </div>
+            ) : secretaries && secretaries.length > 0 ?
                 (<>
                     <div className="mt-3">
-                    <table className="table">
-                        <thead>
-                        <tr>
-                            <th>Nume</th>
-                            <th>Prenume</th>
-                            <th>Titlu</th>
-                            <th>Email</th>
-                            <th>Acțiuni</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {secretaries.map((secretary, index) => (<tr key={index}>
+                        <table className="table">
+                            <thead>
+                            <tr>
+                                <th>Nume</th>
+                                <th>Prenume</th>
+                                <th>Titlu</th>
+                                <th>Email</th>
+                                <th>Acțiuni</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {secretaries.map((secretary, index) => (<tr key={index}>
                                 <td>{secretary.last_name}</td>
                                 <td>{secretary.first_name}</td>
                                 <td>{secretary.title}</td>
@@ -45,13 +60,11 @@ const SecretariesList = ({fetchSecretariesList, secretaries, error}) => {
                                           className="btn btn-primary">Modifică</Link>
                                 </td>
                             </tr>))}
-                        </tbody>
-                    </table>
-                </div>
+                            </tbody>
+                        </table>
+                    </div>
                 </>) :
-                 (<div className="justify-content-center d-flex mt-5">
-                    <TailSpin height="80" width="80" color="#4fa94d" ariaLabel="tail-spin-loading" radius="1" wrapperStyle={{}} wrapperClass="" visible={true} />
-                </div>)
+                (<p>Niciun rezultat</p>)
             }
 
         </div>

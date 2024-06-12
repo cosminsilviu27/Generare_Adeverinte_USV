@@ -104,3 +104,31 @@ p {
     display: none !important;
   }
 }
+
+.DateRangePicker {
+    margin: 0 auto; /* Center the DateRangePicker horizontally */
+}
+
+.DateInput{
+    width: 100px !important;
+}
+
+.DateInput_input{
+    padding: 7px !important;
+    font-size: 16px !important;
+    text-align: center;
+}
+
+.DateRangePickerInput_arrow_svg {
+    width: 20px !important;
+}
+
+.CalendarDay {
+    border: none; /* Remove the border around each day */
+    vertical-align: middle; /* Vertically center the day number in each cell */
+}
+
+.CalendarDay__selected, .CalendarDay__hovered_span, .CalendarDay__selected_span {
+    background: #4CAF50; /* Change the background color of selected and hovered days */
+    color: white; /* Change the text color of selected and hovered days */
+}

@@ -33,6 +33,9 @@ import ApprovedCertificatesList from "./containers/certificate/ApprovedCertifica
 import RejectedCertificatesList from "./containers/certificate/RejectedCertificatesList";
 import EditCertificate from "./containers/certificate/EditCertificate";
 import PrintCertificates from "./containers/certificate/PrintCertificates";
+import DeleteStudent from "./containers/student/DeleteStudent";
+import AddSecretary from "./containers/secretary/AddSecretary";
+import EditFaculty from "./containers/faculty/EditFaculty";
 
 const App = () => (
     <Provider store={store}>
@@ -63,6 +66,8 @@ const App = () => (
                     <Route exact path='/get-students-list' element={<StudentsList/>}/>
                     <Route exact path='/create-student' element={<CreateStudent/>}/>
                     <Route exact path='/edit-student/:student_id' element={<EditStudent/>}/>
+                    <Route exact path='/delete-student/:student_id' element={<DeleteStudent/>}/>
+
 
                     <Route exact path='/update-secretaries-list' element={
                         <PrivateRoute allowedRoles={['username']}>
@@ -79,12 +84,18 @@ const App = () => (
                             <EditSecretary/>
                         </PrivateRoute>
                     }/>
+                    <Route exact path='/add-secretary' element={
+                        <PrivateRoute allowedRoles={['username']}>
+                            <AddSecretary/>
+                        </PrivateRoute>
+                    }/>
                     <Route exact path='/update-faculties-list' element={
                         <PrivateRoute allowedRoles={['username']}>
                             <UpdateFaculties/>
                         </PrivateRoute>
                     }/>
                     <Route exact path='/get-faculties-list' element={<FacultiesList/>}/>
+                    <Route exact path='/edit-faculty/:faculty_id' element={<EditFaculty/>}/>
                     <Route exact path='/get-certificates-list' element={<CertificatesList/>}/>
                     <Route exact path='/print-certificates' element={<PrintCertificates/>}/>
                     <Route exact path='/get-approved-certificates-list' element={<ApprovedCertificatesList/>}/>

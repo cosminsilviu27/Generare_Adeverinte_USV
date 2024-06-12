@@ -36,8 +36,8 @@ INSTALLED_APPS = [
     'secretary_profile',
     'certificate',
     'faculty',
-
     'social',
+    'profiles'
 ]
 
 

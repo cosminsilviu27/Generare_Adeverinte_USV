@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {fetchCertificatesList} from '../../actions/certificates';
 import {Link} from "react-router-dom";
@@ -6,10 +6,14 @@ import {TailSpin} from "react-loader-spinner";
 
 const CertificatesList = ({fetchCertificatesList, certificates, error}) => {
 
-    useEffect(() => {
-        fetchCertificatesList();
-    }, [fetchCertificatesList]);
+    const [isLoading, setIsLoading] = useState(true);
 
+    useEffect(() => {
+        setIsLoading(true);
+        fetchCertificatesList().then(() => {
+            setIsLoading(false);
+        });
+    }, [fetchCertificatesList]);
 
     return (
         <div className="container">
@@ -17,7 +21,12 @@ const CertificatesList = ({fetchCertificatesList, certificates, error}) => {
 
             {error && <p>{error}</p>}
 
-            {certificates && certificates.length > 0 ?
+            {isLoading ? (
+                <div className="justify-content-center d-flex mt-5">
+                    <TailSpin height="80" width="80" color="#4fa94d" ariaLabel="tail-spin-loading" radius="1"
+                              wrapperStyle={{}} wrapperClass="" visible={true}/>
+                </div>
+            ) : certificates && certificates.length > 0 ?
                 (<>
                     <div className="mt-3">
                         <table className="table">
@@ -49,10 +58,7 @@ const CertificatesList = ({fetchCertificatesList, certificates, error}) => {
                         </table>
                     </div>
                 </>) :
-                (<div className="justify-content-center d-flex mt-5">
-                    <TailSpin height="80" width="80" color="#4fa94d" ariaLabel="tail-spin-loading" radius="1"
-                              wrapperStyle={{}} wrapperClass="" visible={true}/>
-                </div>)
+                (<p>Niciun rezultat</p>)
             }
         </div>
     );

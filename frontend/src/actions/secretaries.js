@@ -14,7 +14,7 @@ import {
     FETCH_SECRETARY_SUCCESS,
     UPDATE_SECRETARY_SUCCESS,
     UPDATE_SECRETARY_REQUEST,
-    UPDATE_SECRETARY_FAILURE
+    UPDATE_SECRETARY_FAILURE, ADD_SECRETARY_REQUEST, ADD_SECRETARY_FAILURE, ADD_SECRETARY_SUCCESS
 } from "./types";
 
 
@@ -173,3 +173,39 @@ export const updateSecretary = (secretaryId, formData, navigate) => async (dispa
         console.log(error.message);
     }
 };
+
+export const addSecretary = (formData, navigate) => async (dispatch) => {
+    const config = {
+        headers: {
+            'X-CSRFToken': Cookies.get('csrftoken')
+        }
+    };
+
+    try {
+        dispatch({
+            type: ADD_SECRETARY_REQUEST
+        });
+
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/secretaries/addSecretary`, formData, config);
+
+        if (res.data.error) {
+            dispatch({
+                type: ADD_SECRETARY_FAILURE, payload: res.data.error
+            });
+
+            console.log('Failed to add secretary ' + res.data.error);
+        } else if (res.data.success) {
+            dispatch({
+                type: ADD_SECRETARY_SUCCESS
+            });
+
+            navigate(`/get-secretaries-list`);
+        }
+    } catch (error) {
+        dispatch({
+            type: ADD_SECRETARY_FAILURE, payload: error.message
+        });
+
+        console.log(error.message);
+    }
+}

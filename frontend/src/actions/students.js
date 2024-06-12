@@ -16,7 +16,10 @@ import {
     FETCH_STUDENT_FAILURE,
     UPDATE_STUDENT_SUCCESS,
     UPDATE_STUDENT_REQUEST,
-    UPDATE_STUDENT_FAILURE
+    UPDATE_STUDENT_FAILURE,
+    DELETE_STUDENT_REQUEST,
+    DELETE_STUDENT_FAILURE,
+    DELETE_STUDENT_SUCCESS
 } from "./types";
 
 
@@ -209,3 +212,36 @@ export const updateStudent = (studentId, formData, navigate) => async (dispatch)
         console.log(error.message);
     }
 };
+
+export const deleteStudent = (studentId) => async (dispatch) => {
+
+    const config = {
+        headers: {
+            'X-CSRFToken': Cookies.get('csrftoken')
+        }
+    };
+
+    try {
+        dispatch({
+            type: DELETE_STUDENT_REQUEST
+        });
+        const res = await axios.delete(`${process.env.REACT_APP_API_URL}/students/deleteStudent/${studentId}/`, config);
+
+        if (res.data.error) {
+            dispatch({
+                type: DELETE_STUDENT_FAILURE, payload: res.data.error
+            });
+            console.log('Failed to delete student ' + res.data.error);
+        } else if (res.data.success) {
+            dispatch({
+                type: DELETE_STUDENT_SUCCESS
+            });
+            console.log('Student deleted successfully');
+        }
+    } catch (error) {
+        dispatch({
+            type: DELETE_STUDENT_FAILURE, payload: error.message
+        });
+        console.log(error.message);
+    }
+}

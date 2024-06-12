@@ -156,8 +156,17 @@ class GetCertificatesList(APIView):
 
 class GetApprovedCertificatesList(APIView):
     def get(self, request, format=None):
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+
         try:
-            certificates = Certificate.objects.filter(status="approved")
+            if start_date and end_date:
+                start_date = datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
+                end_date = datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
+                certificates = Certificate.objects.filter(status='approved', processing_date__range=[start_date, end_date])
+            else:
+                certificates = Certificate.objects.filter(status='approved')
+
             serializer = CertificateSerializer(certificates, many=True)
             return Response({"success": True, "data": serializer.data})
         except Exception as e:
@@ -166,8 +175,17 @@ class GetApprovedCertificatesList(APIView):
 
 class GetRejectedCertificatesList(APIView):
     def get(self, request, format=None):
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+
         try:
-            certificates = Certificate.objects.filter(status='rejected')
+            if start_date and end_date:
+                start_date = datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
+                end_date = datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
+                certificates = Certificate.objects.filter(status='rejected', processing_date__range=[start_date, end_date])
+            else:
+                certificates = Certificate.objects.filter(status='rejected')
+
             serializer = CertificateSerializer(certificates, many=True)
             return Response({"success": True, "data": serializer.data})
         except Exception as e:
@@ -302,7 +320,7 @@ class DownloadCertificates(APIView):
             # Create a workbook and select the active worksheet
             workbook = Workbook()
             worksheet = workbook.active
-            worksheet.title = 'Certificates'
+            worksheet.title = 'Adeverințe'
 
             # Define the headers
             headers = ['Număr înregistrare adeverință',
@@ -314,7 +332,8 @@ class DownloadCertificates(APIView):
             worksheet.append(headers)
 
             # Fetch the certificates data
-            certificates = Certificate.objects.filter(status='approved').select_related('student')
+            today = timezone.now().date()
+            certificates = Certificate.objects.filter(status='approved', processing_date=today).select_related('student')
 
             # Write data rows
             for certificate in certificates:
@@ -337,6 +356,7 @@ class DownloadCertificates(APIView):
             return response
         except Exception as e:
             return Response({'error': f'Something went wrong: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class SetCertificatesPrinted(APIView):
     def post(self, request):

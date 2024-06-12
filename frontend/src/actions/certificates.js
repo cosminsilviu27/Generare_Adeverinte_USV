@@ -135,7 +135,7 @@ export const downloadCertificates = () => async dispatch => {
             const url = window.URL.createObjectURL(new Blob([response.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'certificates.xlsx');
+            link.setAttribute('download', 'adeverinte.xlsx');
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link); // Clean up after download
@@ -183,22 +183,32 @@ export const fetchCertificatesForPrint = () => async dispatch => {
     }
 };
 
-export const fetchApprovedCertificatesList = () => async dispatch => {
+export const fetchApprovedCertificatesList = (startDate, endDate) => async dispatch => {
     const config = {
         headers: {
             'X-CSRFToken': Cookies.get('csrftoken')
         }
     };
 
+    // Convert dates to a format suitable for your backend
+    const formattedStartDate = startDate ? startDate.toISOString() : null;
+    const formattedEndDate = endDate ? endDate.toISOString() : null;
+
     try {
         dispatch({
             type: FETCH_APPROVED_CERTIFICATES_REQUEST
         });
 
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/certificates/getApprovedCertificatesList`, config);
+        // Include the dates in the API request if they are provided
+        const url = `${process.env.REACT_APP_API_URL}/certificates/getApprovedCertificatesList`;
+        const params = new URLSearchParams();
+        if (formattedStartDate) params.append('start_date', formattedStartDate);
+        if (formattedEndDate) params.append('end_date', formattedEndDate);
+
+        const res = await axios.get(url + '?' + params.toString(), config);
 
         if (res.data.error) {
-            console.log('Failed to fetch certificates list ' + res.data.error);
+            console.log('Failed to fetch approved certificates list ' + res.data.error);
 
             dispatch({
                 type: FETCH_APPROVED_CERTIFICATES_FAILURE, error: res.data.error
@@ -217,22 +227,32 @@ export const fetchApprovedCertificatesList = () => async dispatch => {
     }
 };
 
-export const fetchRejectedCertificatesList = () => async dispatch => {
+export const fetchRejectedCertificatesList = (startDate, endDate) => async dispatch => {
     const config = {
         headers: {
             'X-CSRFToken': Cookies.get('csrftoken')
         }
     };
 
+    // Convert dates to a format suitable for your backend
+    const formattedStartDate = startDate ? startDate.toISOString() : null;
+    const formattedEndDate = endDate ? endDate.toISOString() : null;
+
     try {
         dispatch({
             type: FETCH_REJECTED_CERTIFICATES_REQUEST
         });
 
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/certificates/getRejectedCertificatesList`, config);
+        // Include the dates in the API request if they are provided
+        const url = `${process.env.REACT_APP_API_URL}/certificates/getRejectedCertificatesList`;
+        const params = new URLSearchParams();
+        if (formattedStartDate) params.append('start_date', formattedStartDate);
+        if (formattedEndDate) params.append('end_date', formattedEndDate);
+
+        const res = await axios.get(url + '?' + params.toString(), config);
 
         if (res.data.error) {
-            console.log('Failed to fetch certificates list ' + res.data.error);
+            console.log('Failed to fetch rejected certificates list ' + res.data.error);
 
             dispatch({
                 type: FETCH_REJECTED_CERTIFICATES_FAILURE, error: res.data.error

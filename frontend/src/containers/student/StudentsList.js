@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {fetchStudentsList} from '../../actions/students';
 import CSRFToken from '../../components/CSRFToken';
@@ -6,8 +6,13 @@ import {Link} from "react-router-dom";
 import {TailSpin} from "react-loader-spinner";
 
 const StudentsList = ({fetchStudentsList, students, error, isAuthenticated, loginMethod}) => {
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
-        fetchStudentsList();
+        setIsLoading(true); 
+        fetchStudentsList().then(() => {
+            setIsLoading(false); 
+        });
     }, [fetchStudentsList]);
 
     const adminBtns = (<Fragment>
@@ -27,7 +32,12 @@ const StudentsList = ({fetchStudentsList, students, error, isAuthenticated, logi
 
             {error && <p>{error}</p>}
 
-            {students && students.length > 0 ?
+            {isLoading ? (
+                <div className="justify-content-center d-flex mt-5">
+                    <TailSpin height="80" width="80" color="#4fa94d" ariaLabel="tail-spin-loading" radius="1"
+                              wrapperStyle={{}} wrapperClass="" visible={true}/>
+                </div>
+            ) : students && students.length > 0 ?
                 (<>
                     <div className="mt-3">
                         <table className="table">
@@ -57,17 +67,16 @@ const StudentsList = ({fetchStudentsList, students, error, isAuthenticated, logi
                                 <td>{student.full_name}</td>
                                 <td>{student.sex}</td>
                                 <td>
-                                    <Link to={`/edit-student/${student.id}`} className="btn btn-primary">Modifică</Link>
+                                    <Link to={`/edit-student/${student.id}`}
+                                          className="btn btn-primary mr-3">Modifică</Link>
+                                    <Link to={`/delete-student/${student.id}`} className="btn btn-danger">Șterge</Link>
                                 </td>
                             </tr>))}
                             </tbody>
                         </table>
                     </div>
                 </>) :
-                (<div className="justify-content-center d-flex mt-5">
-                    <TailSpin height="80" width="80" color="#4fa94d" ariaLabel="tail-spin-loading" radius="1"
-                          wrapperStyle={{}} wrapperClass="" visible={true}/>
-                </div>)
+                (<p>Niciun rezultat</p>)
             }
         </div>
     );

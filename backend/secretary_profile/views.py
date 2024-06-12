@@ -74,3 +74,23 @@ class SecretaryDetailView(APIView):
         except Exception as e:
             return Response({'error': f'Something went wrong: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+class AddSecretaryView(generics.CreateAPIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def put(self, request):
+        try:
+            secretary = request.data
+
+            SecretaryProfile.objects.create(
+                first_name=secretary['first_name'],
+                last_name=secretary['last_name'],
+                email=secretary['email'],
+                title=secretary['title']
+            )
+
+            return Response({'success': f'Successfully added secretary to DB'},
+                            status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response({'error': f'Something went wrong: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

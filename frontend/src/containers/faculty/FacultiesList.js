@@ -29,6 +29,7 @@ const FacultiesList = ({fetchFacultiesList, faculties, error}) => {
                         <th>An universitar curent</th>
                         <th>Nume decan</th>
                         <th>Nume secretară șefă</th>
+                        <th>Acțiuni</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -39,6 +40,10 @@ const FacultiesList = ({fetchFacultiesList, faculties, error}) => {
                             <td>{faculty.current_academic_year}</td>
                             <td>{faculty.dean_name}</td>
                             <td>{faculty.chief_secretary.first_name} {faculty.chief_secretary.last_name}</td>
+                            <td>
+                                <Link to={`/edit-faculty/${faculty.id}`}
+                                          className="btn btn-primary">Modifică</Link>
+                            </td>
                         </tr>
                     ))}
                     </tbody>

@@ -214,3 +214,14 @@ class StudentDetailView(APIView):
         except Exception as e:
             return Response({'error': f'Something went wrong: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+class DeleteStudentView(APIView):
+    def delete(self, request, student_id):
+        try:
+            student = StudentProfile.objects.get(id=student_id)
+            student.delete()
+            return Response({'success': 'Student deleted successfully'}, status=status.HTTP_201_CREATED)
+        except StudentProfile.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': f'Something went wrong: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
