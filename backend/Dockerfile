@@ -1,23 +1,11 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8
 
-# Set the working directory in the container
+
+FROM python:3.8.10
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+COPY . /app
 WORKDIR /app
-
-# Copy the requirements file into the container
-COPY requirements.txt /app/
-
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application code into the container
-COPY . /app/
-
-# Make port 8000 available to the world outside this container
-EXPOSE 8000
-
-# Define environment variable
-ENV PYTHONUNBUFFERED=1
-
-# Run the application
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN pip3 install -r /app/requirements.txt
+RUN python manage.py makemigrations
+RUN python manage.py migrate
+CMD gunicorn -b 0.0.0.0:8000 --worker-class=gevent --worker-connections=1000 --workers=5 backend.wsgi
