@@ -1,27 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import { fetchSecretariesList } from '../../actions/secretaries';
 
-const SecretaryDashboard = ({ isAuthenticated }) => {
-
+const SecretaryDashboard = ({ fetchSecretariesList, secretaries, error }) => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const [email, setEmail] = useState('');
+    const [isSecretary, setIsSecretary] = useState(null); // Use null to indicate loading state
+
+    const config = {
+        headers: {
+            'X-CSRFToken': Cookies.get('csrftoken')
+        }
+    };
 
     useEffect(() => {
-        const fetchEmail = async () => {
+        const fetchEmailAndCheckSecretary = async () => {
             try {
                 const res = await axios.get(`${process.env.REACT_APP_API_URL}/profiles/update-profile/`);
-                setEmail(res.data.email);
+                const userEmail = res.data.email;
+
+                if (userEmail) {
+                    const secretariesRes = await axios.get(`${process.env.REACT_APP_API_URL}/secretaries/getSecretariesList`, config);
+                    const secretariesEmails = secretariesRes.data.data.map(secretary => secretary.email);
+
+                    setEmail(userEmail);
+
+                    if (secretariesEmails.includes(userEmail)) {
+                        setIsSecretary(true);
+                    } else {
+                        navigate('/secretary'); // Redirect if email is not found in secretaries list
+                    }
+                } else {
+                    navigate('/secretary'); // Redirect to login if email is not found
+                }
             } catch (err) {
-                console.error('Error fetching email:', err);
+                console.error('Error fetching email or secretaries:', err);
+                navigate('/secretary'); // Redirect to login if there's an error
             }
         };
 
-        fetchEmail();
-    }, [dispatch]);
+        fetchEmailAndCheckSecretary();
+    }, [navigate]);
 
     const handleRedirectToStudents = () => {
         navigate('/get-students-list');
@@ -55,6 +77,14 @@ const SecretaryDashboard = ({ isAuthenticated }) => {
         width: '45%', display: 'flex', flexDirection: 'column', alignItems: 'center'
     };
 
+    if (isSecretary === null) {
+        return <div>Loading...</div>; // Show a loading state until the check is done
+    }
+
+    if (!isSecretary) {
+        return null; // Don't render anything if the user is not a secretary
+    }
+
     return (
         <div className='container mt-5'>
             <div className='text-center mb-5'>
@@ -83,12 +113,12 @@ const SecretaryDashboard = ({ isAuthenticated }) => {
             </div>
             <div style={flexContainerStyle}>
                 <div style={flexItemStyle}>
-                    <button className='btn btn-primary' style={buttonStyle} onClick={handleRedirectToStudents}>
+                    <button className='btn btn-info' style={buttonStyle} onClick={handleRedirectToStudents}>
                         Vizualizează Lista Studenților
                     </button>
                 </div>
                 <div style={flexItemStyle}>
-                    <button className='btn btn-warning' style={buttonStyle} onClick={handleRedirectToFaculties}>
+                    <button className='btn btn-success' style={buttonStyle} onClick={handleRedirectToFaculties}>
                         Vizualizează Lista Facultăților
                     </button>
                 </div>
@@ -98,7 +128,8 @@ const SecretaryDashboard = ({ isAuthenticated }) => {
 };
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    secretaries: state.secretary.secretaries,
+    error: state.secretary.error,
 });
 
-export default connect(mapStateToProps, null)(SecretaryDashboard);
+export default connect(mapStateToProps, { fetchSecretariesList })(SecretaryDashboard);
