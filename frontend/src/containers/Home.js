@@ -8,20 +8,20 @@ const Home = () => {
     };
 
     return (
-        <div className='container'>
-            <div className='jumbotron mt-5'>
+        <div className='container' style={{ maxWidth: '1300px', margin: '50px auto 0' }}>
+            <div className='jumbotron mt-5' style={{ padding: '2rem 2rem' }}>
                 <h1 className='display-4'>Generare Adeverințe</h1>
                 <p className='lead'>Sistem digital pentru generarea de adeverinte</p>
                 <hr className='my-4' />
                 <div className="text-center mb-4">
-                    <h3>UNIVERSITATEA „ȘTEFAN CEL MARE” DIN SUCEAVA</h3>
-                    <h4>FACULTATEA DE INGINERIE ELECTRICĂ ȘI ȘTIINȚA CALCULATOARELOR</h4>
+                    <h1>UNIVERSITATEA „ȘTEFAN CEL MARE” DIN SUCEAVA</h1>
+                    <h2>FACULTATEA DE INGINERIE ELECTRICĂ ȘI ȘTIINȚA CALCULATOARELOR</h2>
                 </div>
                 <p>Alegeți tipul de utilizator pentru înregistrare:</p>
-                <div className='btn-group' role='group' aria-label='Basic example'>
-                    <Link className='btn btn-primary' to='/student' role='button'>Înregistrează-te ca și Student</Link>
-                    <button className='btn btn-secondary' onClick={continueWithGoogle}>Înregistrează-te ca și Secretară</button>
-                    <Link className='btn btn-success' to='/login-admin' role='button'>Înregistrează-te ca și Administrator</Link>
+                <div className='d-flex justify-content-around mt-4'>
+                    <Link className='btn btn-primary btn-lg' to='/student' role='button'>Înregistrează-te ca și Student</Link>
+                    <button className='btn btn-secondary btn-lg' onClick={continueWithGoogle}>Înregistrează-te ca și Secretară</button>
+                    <Link className='btn btn-success btn-lg' to='/login-admin' role='button'>Înregistrează-te ca și Administrator</Link>
                 </div>
             </div>
         </div>
