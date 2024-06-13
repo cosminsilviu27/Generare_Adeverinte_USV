@@ -1,6 +1,6 @@
 import React from 'react';
 
-function SingleCertificate({certificate}) {
+function SingleCertificate({certificate, secretary}) {
     return (
         <div className="print-certificate-container">
             <div className="print-certificate-header">
@@ -45,6 +45,7 @@ function SingleCertificate({certificate}) {
                         {certificate.student.faculty.chief_secretary.first_name} {certificate.student.faculty.chief_secretary.last_name}
                     </div>
                     <div className="col col-4 text-center">
+                        {secretary}
                     </div>
                 </div>
             </div>

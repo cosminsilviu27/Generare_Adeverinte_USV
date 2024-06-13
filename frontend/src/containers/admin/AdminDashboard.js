@@ -20,6 +20,10 @@ const AdminDashboard = () => {
         navigate('/get-faculties-list');
     };
 
+    const handleRedirectToReset = () => {
+        navigate('/reset-application');
+    }
+
 
     const buttonStyle = {
         width: '100%', 
@@ -30,7 +34,8 @@ const AdminDashboard = () => {
 
     const flexContainerStyle = {
         display: 'flex',
-        justifyContent: 'space-around', 
+        justifyContent: 'space-around',
+        flexWrap: 'wrap'
     };
 
     const flexItemStyle = {
@@ -62,6 +67,11 @@ const AdminDashboard = () => {
                     </button>
                     <button className='btn btn-success' style={buttonStyle} onClick={handleRedirectToFaculties}>
                         Vizualizează Lista Facultăților
+                    </button>
+                </div>
+                <div style={flexItemStyle}>
+                    <button className='btn btn-danger' style={buttonStyle} onClick={handleRedirectToReset}>
+                        Resetează Aplicația
                     </button>
                 </div>
             </div>

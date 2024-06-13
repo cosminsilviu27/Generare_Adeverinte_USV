@@ -68,7 +68,7 @@ const StudentsList = ({fetchStudentsList, students, error, isAuthenticated, logi
                                 <td>{student.sex}</td>
                                 <td>
                                     <Link to={`/edit-student/${student.id}`}
-                                          className="btn btn-primary mr-3">Modifică</Link>
+                                          className="btn btn-primary mb-3">Modifică</Link>
                                     <Link to={`/delete-student/${student.id}`} className="btn btn-danger">Șterge</Link>
                                 </td>
                             </tr>))}

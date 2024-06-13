@@ -4,7 +4,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Layout from './hocs/Layout';
 
 import Home from './containers/Home';
-import SecretaryPage from './containers/secretary/SecretaryDashboard';
+import SecretaryDashboard from './containers/secretary/SecretaryDashboard';
 
 import Secretary from './containers/secretary/Secretary';
 import Student from './containers/student/Student';
@@ -36,6 +36,7 @@ import PrintCertificates from "./containers/certificate/PrintCertificates";
 import DeleteStudent from "./containers/student/DeleteStudent";
 import AddSecretary from "./containers/secretary/AddSecretary";
 import EditFaculty from "./containers/faculty/EditFaculty";
+import ResetApplication from "./containers/admin/ResetApplication";
 
 const App = () => (
     <Provider store={store}>
@@ -44,18 +45,35 @@ const App = () => (
                 <Routes>
                     <Route exact path='/' element={<Home/>}/>
                     <Route exact path='/student' element={<Student/>}/>
-                    <Route exact path='/secretary' element={
-                        <PrivateRoute bannedRoles={['username']}>
-                            <Secretary/>
+                    <Route exact path='/secretary' element={<Secretary/>}/>
+                    <Route exact path='/login-admin' element={<LoginAdmin/>}/>
+                    <Route exact path='/secretary-page' element={<SecretaryDashboard/>}/>
+
+                    <Route exact path='/get-students-list' element={
+                        <PrivateRoute allowedRoles={['google', 'username']}>
+                            <StudentsList/>
                         </PrivateRoute>
                     }/>
-                    <Route exact path='/secretary-page' element={
-                        <SecretaryPage/>
+                    <Route exact path='/edit-student/:student_id' element={
+                        <PrivateRoute allowedRoles={['google', 'username']}>
+                            <EditStudent/>
+                        </PrivateRoute>
                     }/>
-                    <Route exact path='/login-admin' element={<LoginAdmin/>}/>
+                    <Route exact path='/delete-student/:student_id' element={
+                        <PrivateRoute allowedRoles={['google', 'username']}>
+                            <DeleteStudent/>
+                        </PrivateRoute>
+                    }/>
+                    <Route exact path='/get-faculties-list' element={
+                        <PrivateRoute allowedRoles={['google', 'username']}>
+                            <FacultiesList/>
+                        </PrivateRoute>
+                    }/>
+
+                    {/* Admin Routes */}
                     <Route exact path='/admin' element={
                         <PrivateRoute allowedRoles={['username']}>
-                            <AdminDashboard/>
+                            <AdminProfile/>
                         </PrivateRoute>
                     }/>
                     <Route exact path='/update-students-list' element={
@@ -63,20 +81,19 @@ const App = () => (
                             <UpdateStudents/>
                         </PrivateRoute>
                     }/>
-                    <Route exact path='/get-students-list' element={<StudentsList/>}/>
-                    <Route exact path='/create-student' element={<CreateStudent/>}/>
-                    <Route exact path='/edit-student/:student_id' element={<EditStudent/>}/>
-                    <Route exact path='/delete-student/:student_id' element={<DeleteStudent/>}/>
-
-
+                    <Route exact path='/get-secretaries-list' element={
+                        <PrivateRoute allowedRoles={['username']}>
+                            <SecretariesList/>
+                        </PrivateRoute>
+                    }/>
                     <Route exact path='/update-secretaries-list' element={
                         <PrivateRoute allowedRoles={['username']}>
                             <UpdateSecretaries/>
                         </PrivateRoute>
                     }/>
-                    <Route exact path='/get-secretaries-list' element={
+                    <Route path='/dashboard' element={
                         <PrivateRoute allowedRoles={['username']}>
-                            <SecretariesList/>
+                            <AdminDashboard/>
                         </PrivateRoute>
                     }/>
                     <Route exact path='/edit-secretary/:secretary_id' element={
@@ -94,18 +111,56 @@ const App = () => (
                             <UpdateFaculties/>
                         </PrivateRoute>
                     }/>
-                    <Route exact path='/get-faculties-list' element={<FacultiesList/>}/>
-                    <Route exact path='/edit-faculty/:faculty_id' element={<EditFaculty/>}/>
-                    <Route exact path='/get-certificates-list' element={<CertificatesList/>}/>
-                    <Route exact path='/print-certificates' element={<PrintCertificates/>}/>
-                    <Route exact path='/get-approved-certificates-list' element={<ApprovedCertificatesList/>}/>
-                    <Route exact path='/get-rejected-certificates-list' element={<RejectedCertificatesList/>}/>
-                    <Route exact path='/approve-certificate/:processing_position' element={<ApproveCertificate/>}/>
-                    <Route exact path='/reject-certificate/:processing_position' element={<RejectCertificate/>}/>
-                    <Route exact path='/edit-certificate/:certificate_id' element={<EditCertificate/>}/>
-                    <Route path='/dashboard' element={
+                    <Route exact path='/edit-faculty/:faculty_id' element={
                         <PrivateRoute allowedRoles={['username']}>
-                               <AdminProfile/>
+                            <EditFaculty/>
+                        </PrivateRoute>
+                    }/>
+                    <Route exact path='/reset-application' element={
+                        <PrivateRoute allowedRoles={['username']}>
+                            <ResetApplication/>
+                        </PrivateRoute>
+                    }/>
+
+                    {/* Secretary Routes */}
+                    <Route exact path='/approve-certificate/:processing_position' element={
+                        <PrivateRoute allowedRoles={['google']}>
+                            <ApproveCertificate/>
+                        </PrivateRoute>
+                    }/>
+                    <Route exact path='/reject-certificate/:processing_position' element={
+                        <PrivateRoute allowedRoles={['google']}>
+                            <RejectCertificate/>
+                        </PrivateRoute>
+                    }/>
+                    <Route exact path='/edit-certificate/:certificate_id' element={
+                        <PrivateRoute allowedRoles={['google']}>
+                            <EditCertificate/>
+                        </PrivateRoute>
+                    }/>
+                    <Route exact path='/create-student' element={
+                        <PrivateRoute allowedRoles={['google']}>
+                            <CreateStudent/>
+                        </PrivateRoute>
+                    }/>
+                    <Route exact path='/get-certificates-list' element={
+                        <PrivateRoute allowedRoles={['google']}>
+                            <CertificatesList/>
+                        </PrivateRoute>
+                    }/>
+                    <Route exact path='/print-certificates' element={
+                        <PrivateRoute allowedRoles={['google']}>
+                            <PrintCertificates/>
+                        </PrivateRoute>
+                    }/>
+                    <Route exact path='/get-approved-certificates-list' element={
+                        <PrivateRoute allowedRoles={['google']}>
+                            <ApprovedCertificatesList/>
+                        </PrivateRoute>
+                    }/>
+                    <Route exact path='/get-rejected-certificates-list' element={
+                        <PrivateRoute allowedRoles={['google']}>
+                            <RejectedCertificatesList/>
                         </PrivateRoute>
                     }/>
                 </Routes>

@@ -63,7 +63,7 @@ p {
 
 .print-certificate-container {
     width: 49%;
-    margin: 0;
+    margin: 20px 0;
     font-family: "Times New Roman", Times, serif;
     line-height: 1.6;
 }

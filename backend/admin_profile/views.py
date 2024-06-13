@@ -1,10 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from certificate.models import Certificate
+from student_profile.models import StudentProfile
 from .models import AdminProfile
 from .serializers import AdminProfileSerializer
 import logging
+from rest_framework import status
 
 logger = logging.getLogger(__name__)
+
 
 class GetAdminProfileView(APIView):
     def get(self, request):
@@ -54,3 +59,17 @@ class UpdateAdminProfileView(APIView):
         except Exception as e:
             logger.error(f"Error updating profile: {str(e)}")
             return Response({'error': 'Something went wrong when updating profile'})
+
+
+class ResetApplication(APIView):
+    def put(self, request):
+        try:
+            Certificate.objects.all().delete()
+            StudentProfile.objects.all().delete()
+
+            return Response({'success': 'Application reset successfully'},
+                            status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            logger.error(f"Error resetting application: {str(e)}")
+            return Response({'error': 'Something went wrong when resetting application'})

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import GetCertificatesList, ApproveCertificateDetailView, RejectCertificateDetailView, \
     EditCertificateDetailView, GetRejectedCertificatesList, GetApprovedCertificatesList, GetCertificatesForPrint, \
-    SetCertificatesPrinted, DownloadCertificates
+    SetCertificatesPrinted, DownloadCertificates, DownloadAllCertificates
 from . import views
 
 urlpatterns = [
@@ -13,5 +13,6 @@ urlpatterns = [
     path('rejectCertificate/<int:processing_position>/', RejectCertificateDetailView.as_view()),
     path('editCertificate/<int:certificate_id>/', EditCertificateDetailView.as_view()),
     path('downloadCertificates', DownloadCertificates.as_view()),
-    path('setCertificatesPrinted', SetCertificatesPrinted.as_view())
+    path('downloadAllCertificates', DownloadAllCertificates.as_view()),
+    path('setCertificatesPrinted', SetCertificatesPrinted.as_view()),
 ]

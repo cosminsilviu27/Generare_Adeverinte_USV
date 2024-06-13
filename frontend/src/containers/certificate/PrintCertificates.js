@@ -3,9 +3,24 @@ import {connect} from 'react-redux';
 import {fetchCertificatesForPrint, setCertificatesAsPrinted} from '../../actions/certificates';
 import {TailSpin} from "react-loader-spinner";
 import SingleCertificate from "./SingleCertificate";
+import axios from "axios";
 
 const PrintCertificates = ({fetchCertificatesForPrint, setCertificatesAsPrinted, certificatesForPrint, error}) => {
     const [isLoading, setIsLoading] = useState(true);
+    const [secretaryName, setSecretaryName] = useState('');
+
+     useEffect(() => {
+        const fetchEmail = async () => {
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/profiles/get-profile-name/`);
+                setSecretaryName(res.data.name);
+            } catch (err) {
+                console.error('Error fetching email:', err);
+            }
+        };
+
+        fetchEmail();
+    }, []);
 
     useEffect(() => {
         setIsLoading(true);
@@ -41,7 +56,7 @@ const PrintCertificates = ({fetchCertificatesForPrint, setCertificatesAsPrinted,
                             {groupedCertificates.map((group, pageIndex) => (
                                 <div key={pageIndex} className="page-break">
                                     {group.map((certificate) => (
-                                        <SingleCertificate key={certificate.id} certificate={certificate}/>
+                                        <SingleCertificate key={certificate.id} certificate={certificate} secretary={secretaryName}/>
                                     ))}
                                 </div>
                             ))}

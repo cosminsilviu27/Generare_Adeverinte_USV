@@ -1,18 +1,26 @@
-FROM node:14-alpine AS builder
+# Use an official Node runtime as a parent image
+FROM node:14-alpine
 
-WORKDIR /opt/web
-COPY . ./
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy both package.json and package-lock.json (if available)
+COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
-ENV PATH="./node_modules/.bin:$PATH"
+# Copy the React project into the container
+COPY . .
 
+# Ensure the target directory exists
+RUN mkdir -p ../backend/build
+
+# Build the React app for production
 RUN npm run build
 
-FROM nginx:1.20.1-alpine
-RUN apk --no-cache add curl
-RUN curl -L https://github.com/a8m/envsubst/releases/download/v1.1.0/envsubst-`uname -s`-`uname -m` -o envsubst && \
-    chmod +x envsubst && \
-    mv envsubst /usr/local/bin
-COPY ./nginx.config /etc/nginx/nginx.template
-CMD ["/bin/sh", "-c", "envsubst < /etc/nginx/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
-COPY --from=builder /opt/web/build /usr/share/nginx/html
+# Expose the React port
+EXPOSE 3000
+
+# Run React server
+CMD ["npm", "start"]

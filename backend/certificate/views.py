@@ -12,6 +12,7 @@ from google.oauth2.service_account import Credentials
 from django.conf import settings
 from rest_framework.views import APIView
 
+from certificate.emails import send_email
 from certificate.models import Certificate
 from certificate.serializers import CertificateSerializer
 from secretary_profile.models import SecretaryProfile
@@ -163,7 +164,8 @@ class GetApprovedCertificatesList(APIView):
             if start_date and end_date:
                 start_date = datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
                 end_date = datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
-                certificates = Certificate.objects.filter(status='approved', processing_date__range=[start_date, end_date])
+                certificates = Certificate.objects.filter(status='approved',
+                                                          processing_date__range=[start_date, end_date])
             else:
                 certificates = Certificate.objects.filter(status='approved')
 
@@ -182,7 +184,8 @@ class GetRejectedCertificatesList(APIView):
             if start_date and end_date:
                 start_date = datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
                 end_date = datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
-                certificates = Certificate.objects.filter(status='rejected', processing_date__range=[start_date, end_date])
+                certificates = Certificate.objects.filter(status='rejected',
+                                                          processing_date__range=[start_date, end_date])
             else:
                 certificates = Certificate.objects.filter(status='rejected')
 
@@ -225,10 +228,17 @@ class ApproveCertificateDetailView(APIView):
                         purpose=certificateVal['purpose'],
                         status='approved',
                         processing_date=timezone.now().date(),
-                        # processed_by=current_user,
-                        processed_by=SecretaryProfile.objects.first(),
+                        processed_by=SecretaryProfile.objects.filter(email=request.user.email).first(),
                         processing_position=processing_position
                     )
+
+                    # Send email to student
+                    data = (timezone.now() + timezone.timedelta(days=1)).strftime("%d.%m.%Y")
+
+                    subject = "Adeverință aprobată"
+                    message = f"Puteți ridica adeverința de la secretariat începând cu data de {data}, în perioada programului de lucru al secretariatului."
+                    send_email(student.email, subject, message)
+
                 else:
                     return Response({'error': 'Something went wrong: Student data not valid'},
                                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -266,10 +276,14 @@ class RejectCertificateDetailView(APIView):
                         status='rejected',
                         rejection_motive=certificateVal['rejection_motive'],
                         processing_date=timezone.now().date(),
-                        # processed_by=current_user,
-                        processed_by=SecretaryProfile.objects.first(),
+                        processed_by=SecretaryProfile.objects.filter(email=request.user.email).first(),
                         processing_position=processing_position
                     )
+
+                    subject = "Adeverință refuzată"
+                    message = f"Cererea de eliberare adeverință de student a fost refuzată cu motivul: {certificateVal['rejection_motive']}."
+                    send_email(student.email, subject, message)
+
                 else:
                     return Response({'error': 'Something went wrong: Student data not valid'},
                                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -333,7 +347,8 @@ class DownloadCertificates(APIView):
 
             # Fetch the certificates data
             today = timezone.now().date()
-            certificates = Certificate.objects.filter(status='approved', processing_date=today).select_related('student')
+            certificates = Certificate.objects.filter(status='approved', processing_date=today).select_related(
+                'student')
 
             # Write data rows
             for certificate in certificates:
@@ -350,7 +365,67 @@ class DownloadCertificates(APIView):
 
             # Save the workbook to a response
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            response['Content-Disposition'] = 'attachment; filename="certificates.xlsx"'
+            response['Content-Disposition'] = 'attachment; filename="adeverinte.xlsx"'
+            workbook.save(response)
+
+            return response
+        except Exception as e:
+            return Response({'error': f'Something went wrong: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DownloadAllCertificates(APIView):
+    def get(self, request):
+        try:
+            # Create a workbook and select the active worksheet
+            workbook = Workbook()
+            worksheet = workbook.active
+            worksheet.title = 'Adeverințe'
+
+            # Define the headers
+            headers = ['Număr înregistrare adeverință',
+                       'Data înregistrării',
+                       'Nume și prenume student',
+                       'Email student',
+                       'Domeniu de studii',
+                       'Program de studiu',
+                       'Forma de învățământ',
+                       'Tipul studiilor',
+                       'An de studiu',
+                       'Finanțare student',
+                       'Motiv solicitare',
+                       'Adeverință printată',
+                       ]
+
+            worksheet.append(headers)
+
+            # Fetch the certificates data
+            today = timezone.now().date()
+            certificates = Certificate.objects.filter(status='approved').select_related('student')
+
+            # Write data rows
+            for certificate in certificates:
+                registration_number = certificate.registration_number
+                registration_date = certificate.registration_date
+                student_full_name = certificate.student.full_name
+                student_email = certificate.student.email
+                study_domain = certificate.student.study_domain
+                study_program_name = certificate.student.study_program_name
+                study_form = certificate.student.study_form
+                study_cycle = certificate.student.study_cycle
+                study_year = certificate.student.study_year
+                funding = certificate.student.funding
+                purpose = certificate.purpose
+                was_printed = 'da' if certificate.was_printed else 'nu'
+
+                worksheet.append([
+                    registration_number, registration_date, student_full_name, student_email,
+                    study_domain, study_program_name, study_form, study_cycle, study_year, funding,
+                    purpose, was_printed
+                ])
+
+            # Save the workbook to a response
+            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename="adeverinte.xlsx"'
             workbook.save(response)
 
             return response
